@@ -6,8 +6,8 @@
 		<div id="search-button"></div>
 		<span id="msg-ctr">消息中心</span>
 		<span id="fav">收藏夹</span>
-		<span id="create"><span>创作</span><img/></span>
-		<img id="avatar" src="" alt="用户">
+		<span id="create">创作<img src="../assets/menu.png" alt="按钮"/></span>
+		<img id="avatar" src="../assets/avatar.png" alt="用户">
 		<span id="sign-in-up">登录|注册</span>
 	</div>
 </template>
@@ -19,59 +19,60 @@
 </script>
 
 <style>
-	*{
-		margin: 0px;
-		padding: 0px;
-	}
 	#top-nav {
 		position: fixed;
-		width: 1440px;
+		z-index: 10px;
+		width: 100%;
 		height: 59px;
-		left: 0px;
-		top: 0px;
 		
+		font-family: Microsoft YaHei;
+		font-size: 18px;
+		line-height: 59px;
+		
+		color: #FFFFFF;
 		background: rgba(48, 46, 46, 0.77);
 	}
 	#logo{
-		position:absolute;
+		display: inline-block;
+		vertical-align: top;
 		width: 38px;
 		height: 38px;
-		left: 26px;
-		top: 10px;
+		margin: 0px 0px 0px 26px;
+		padding: 10px 0px 11px 0px;
 	}
 	#title{
-		position:absolute;
+		display: inline-block;
+		vertical-align: top;
 		width: 173px;
-		height: 33px;
-		left: 81px;
-		top: 13px;
+		height: 100%;
+		margin:0px 0px 0px 17px;
 		
 		font-family: Lucida Handwriting;
 		font-style: italic;
-		font-weight: normal;
 		font-size: 24px;
-		line-height: 33px;
-		
-		color: #FFFFFF;
 	}
 	#search-box{
-		position:absolute;
+		display: inline-block;
+		vertical-align: top;
 		width: 339px;
 		height: 35px;
-		left: 417px;
-		top: 12px;
+		
+		margin-top: calc((59px - 35px) / 2);
+		margin-left: calc((100% - 593px - 572px) / 2);
 		
 		background: #E8E2E2;
 		border-radius: 30px;
 		border-width: 0px;
 	}
 	#search-button{
-		position:absolute;
-		position: relative;
+		display: inline-block;
+		vertical-align: top;
 		width: 84px;
 		height: 35px;
-		left: 672px;
-		top: 12px;
+		
+		margin-top: 12px;
+		margin-left: -84px;
+		margin-right: calc((100% - 593px - 572px) / 2);
 		
 		background-image: url('../assets/search.png');
 		background-size: contain;
@@ -80,85 +81,55 @@
 		border-radius: 0px 30px 30px 0px;
 	}
 	#msg-ctr{
-		position:absolute;
-		width: 72px;
-		height: 24px;
-		left: 832px;
-		top: 17px;
-		
-		font-family: Microsoft YaHei;
-		font-style: normal;
-		font-weight: normal;
-		font-size: 18px;
-		line-height: 24px;
-		/* identical to box height */
+		display: inline-block;
+		vertical-align: top;
+		height: 100%;
 		
 		text-decoration-line: underline;
 		
 		color: #FFFFFF;
 	}
 	#fav{
-		position:absolute;
-		width: 54px;
-		height: 24px;
-		left: 969px;
-		top: 17px;
-		
-		font-family: Microsoft YaHei;
-		font-style: normal;
-		font-weight: normal;
-		font-size: 18px;
-		line-height: 24px;
-		/* identical to box height */
+		display: inline-block;
+		vertical-align: top;
+		height: 100%;
+		margin-left: 65px;
 		
 		text-decoration-line: underline;
 		
 		color: #FFFFFF;
 	}
 	#create{
-		position:absolute;
-		width: 111px;
-		height: 59px;
-		left: 1080px;
-		top: 0px;
+		display: inline-block;
+		vertical-align: top;
+		height: 100%;
+		margin-left: 57px;
+		padding: 0px 20px 0px 24px;
 		
 		background: rgba(254, 6, 6, 0.6);
 	}
-	#create>span{
-		position:absolute;
-		width: 36px;
-		height: 24px;
-		left: 34px;
-		top: 17px;
-		
-		font-family: Microsoft YaHei;
-		font-style: normal;
-		font-weight: normal;
-		font-size: 18px;
-		line-height: 24px;
-		/* identical to box height */
-		
-		color: #FFFFFF;
+	#create>img{
+		display: inline-block;
+		vertical-align: top;
+		width: 20px;
+		height: 20px;
+		margin: calc((59px - 20px) / 2) 0px calc((59px - 20px) / 2) 14px;
 	}
 	#avatar{
-		position: absolute;
+		display: inline-block;
+		vertical-align: top;
 		width: 33px;
-		height: 34px;
-		left: 1244px;
-		top: 15px;
+		height: 33px;
+		margin: 13px 0px 13px 53px;
+		
+		border-radius: 17px;
 	}
 	#sign-in-up{
-		position: absolute;
-		width: 88px;
-		height: 24px;
-		left: 1304px;
-		top: 20px;
-		
-		font-family: Microsoft YaHei;
-		font-style: normal;
-		font-weight: normal;
-		font-size: 18px;
-		line-height: 24px;
+		display: inline-block;
+		vertical-align: top;
+		width: 76px;
+		height: 100%;
+		margin-right: 48px;
 		
 		text-decoration-line: underline;
 		

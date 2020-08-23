@@ -15,6 +15,14 @@
 				<span class="l-t-i-delete">删除</span>
 			</div>
 		</div>
+		<div id="latest-topics-page-controller">
+			<div id="l-t-last-page">上一页</div>
+				<div class="l-t-page-num" v-for="item in pageNums" :key="item.pageNums">
+					{{item.page}}
+				</div>
+			<div id="l-t-next-page">下一页</div>
+			
+		</div>
 	</div>
 </template>
 
@@ -40,7 +48,13 @@
 					time: "22:20",
 					commentCount: "22"
 				}
-				]
+				],
+				pageNums:[
+					{page: 1},
+					{page: 2},
+					{page: 3}
+				],
+				selectedPage: 1,
 			}
 		}
 	}
@@ -48,10 +62,11 @@
 
 <style>
 	#latest-topics{
-		position: absolute;
-		width: 870.14px;
-		left: 68.43px;
-		top: 369px;
+		width: 870px;
+		display: inline-block;
+		vertical-align: top;
+		margin-top: 17px;
+		margin-left: calc((100% - 1290px) / 2);
 	}
 	#latest-topics-title{
 		width: 100%;
@@ -61,37 +76,41 @@
 		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
 	}
 	#latest-topics-title>span{
-		position: absolute;
-		left: calc(83.88px - 68.43px);
+		display: inline-block;
+		vertical-align: top;
 		
-		font-family: Microsoft YaHei;
-		font-style: normal;
-		font-weight: normal;
+		height: 100%;
+		width: 547px;
+		
+		margin-left: 15px;
+		
 		font-size: 24px;
 		line-height: 91px;
-		display: flex;
 		align-items: center;
 		
 		color: #000000;
 	}
 	#topics-search-box{
-		position: absolute;
-		width: 281.83px;
+		display: inline-block;
+		vertical-align: top;
+		width: 282px;
 		height: 35px;
-		left: calc(630.32px - 68.43px);
-		top: calc(396px - 369px);
 		line-height: 35px;
+		
+		margin-top: calc((91px - 35px) / 2);
 		
 		background: #E8E2E2;
 		border-radius: 8px;
 		border-width: 0px;
 	}
 	#topics-search-button{
-		position: absolute;
+		display: inline-block;
+		vertical-align: top;
 		width: 82.65px;
 		height: 35px;
-		left: calc(829.49px - 68.43px);
-		top: calc(396px - 369px);
+		
+		margin-left: -82.65px;
+		margin-top: calc((91px - 35px) / 2);
 		
 		background: url('../assets/search.png');
 		background-size: contain;
@@ -109,7 +128,6 @@
 
 		background: #FFFFFF;
 		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-		
 	}
 	.l-t-i-title{
 		display: block;
@@ -196,6 +214,37 @@
 		text-decoration-line: underline;
 		
 		color: #999494;
+	}
+	#latest-topics-page-controller{
+		margin-top: 22px;
+		text-align: center;
+	}
+	#l-t-last-page{
+		display: inline-block;
+		vertical-align: top;
+		margin-right: 70px;
+	}
+	.l-t-page-num{
+		display: inline-block;
+		vertical-align: top;
+		
+		width: 37px;
+		height: 35px;
+		
+		font-size: 18px;
+		line-height: 35px;
+		text-align: center;
+		
+		color: #727272;
+		border-radius: 5px;
+	}
+	.l-t-page-num-selected{
+		background: rgba(114, 114, 114, 0.3);
+	}
+	#l-t-next-page{
+		display: inline-block;
+		vertical-align: top;
+		margin-left: 70px;
 	}
 	
 </style>

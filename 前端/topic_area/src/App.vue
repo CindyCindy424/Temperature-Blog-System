@@ -1,16 +1,24 @@
 <template>
-	<div>
+	<div id="container">
 		<TopNav></TopNav>
 		<div id="page">
-			<img id="photo" src="./assets/banner.png" alt="照片">
+			<div id="photo">
+				<img src="./assets/banner.png" alt="照片">
+			</div>
 			<div>
 				<LatestTopics></LatestTopics>
-				<div id="ask-question">
+				<div id="r-aside">
+					<div id="ask-question">
 					我要提问
 					</div>
-				<MyTopics></MyTopics>
-				<HottestTopics></HottestTopics>
+					<MyTopics></MyTopics>
+					<HottestTopics></HottestTopics>
+				</div>
 			</div>
+			<footer>
+				Copyright &copy;2020 Temperature team, All Rights Reserved.<br />
+				<span>举报中心       联系我们</span>
+			</footer>
 		</div>
 	</div>
 </template>
@@ -20,6 +28,7 @@
 	import LatestTopics from "./components/LatestTopics.vue"
 	import MyTopics from "./components/MyTopics.vue"
 	import HottestTopics from "./components/HottestTopics.vue"
+	
 	export default {
 		name: 'App',
 		components:{
@@ -35,60 +44,61 @@
 </script>
 
 <style>
-	#page{
-		position: fixed;
-		z-index: -10;
-		width: 1440px;
+	*{
+		margin: 0px;
+		padding: 0px;
+		text-align: left;
+	}
+	#container{
+		width: 100%;
 		height: 100%;
-		background: #E5E5E5;
 		overflow: auto;
 	}
+	#page{
+		width: 100%;
+		height: 100%;
+		
+		font-family: Microsoft YaHei;
+		
+		background: #E5E5E5;
+	}
 	#photo{
-		position: absolute;
-		width: 1440px;
+		width: calc(100% - 0px);
 		height: 352px;
-		left: 0px;
-		top: 0px;
+		overflow: hidden;
+	}
+	#photo>img{
+		width: 100%;
+		margin-top: calc((0px - 600px + 352px) / 2 + 40px) ;	/*更换图片需要注意修改*/
+	}
+	#r-aside{
+		display: inline-block;
+		vertical-align: top;
+		width: 363px;
+		
+		margin-left: 57px;
+		margin-top: 17px;
+		
 	}
 	#ask-question{
-		position: absolute;
-		width: 363px;
+		width: 100%;
 		height: 51px;
-		left: 993px;
-		top: 369px;
 		
 		background: #B23535;
 		border-radius: 15px;
 		
-		font-family: Microsoft YaHei;
-		font-style: normal;
-		font-weight: normal;
 		font-size: 20px;
 		line-height: 51px;
 		text-align: center;
 		
 		color: #FFFFFF;
 	}
-	.r-aside-subtitle{
-		position: absolute;
-		width: 350px;
-		height: 54px;
-		padding: 0px 0px 0px 13px;
-		z-index: -1;
+	footer{
+		padding: 100px 0px;
+		font-size: 18px;
+		line-height: 25px;
+		text-align: center;
 		
-		background: #FFFFFF;
-		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-		
-		font-family: Microsoft YaHei;
-		font-style: normal;
-		font-weight: normal;
-		font-size: 24px;
-		line-height: 32px;
-		line-height: 54px;
-		
-		letter-spacing: 0.75px;
-		text-transform: uppercase;
-		
-		color: #B23535;
+		color: #999494;
 	}
 </style>

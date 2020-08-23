@@ -13,7 +13,7 @@
 
 配置流程：
 1. vue官方教程，第14节单文件组件视频： https://learning.dcloud.io/#/?vid=14 。
-2. 安装node.js很麻烦，需要配置环境变量，参考 https://www.cnblogs.com/zhouyu2017/p/6485265.html ，https://www.cnblogs.com/liangsongbai/p/5506073.html 。node.js建议下载12.18.3 LTS版。
+2. 安装node.js很麻烦，需要配置环境变量，参考 https://www.cnblogs.com/yominhi/p/7039795.html （这个很管用）， https://www.cnblogs.com/zhouyu2017/p/6485265.html ，https://www.cnblogs.com/liangsongbai/p/5506073.html 。node.js建议下载12.18.3 LTS版。
 
 ## 项目开发
 
