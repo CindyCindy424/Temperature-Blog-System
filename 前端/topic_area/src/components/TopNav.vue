@@ -6,7 +6,12 @@
 		<div id="search-button"></div>
 		<span id="msg-ctr">消息中心</span>
 		<span id="fav">收藏夹</span>
-		<span id="create">创作<img src="../assets/menu.png" alt="按钮"/></span>
+		<span id="create" @click="topMenuToggle">创作<img src="../assets/menu.png" alt="按钮"/></span>
+		<div id="top-menu" v-if="isMenuShow">
+			<div id="t-m-publish-article" class="t-m-button" :style="{top: TMTop, left: MLeft + 'px'}">发表文章</div>
+			<div id="t-m-publish-topic" class="t-m-button">发表话题</div>
+			<div id="t-m-upload-image" class="t-m-button">上传图片</div>
+		</div>
 		<img id="avatar" src="../assets/avatar.png" alt="用户">
 		<span id="sign-in-up">登录|注册</span>
 	</div>
@@ -14,7 +19,17 @@
 
 <script>
 	export default{
-		name:"topNav"
+		name:"topNav",
+		methods:{
+			topMenuToggle(){
+				this.isMenuShow = this.isMenuShow == false?true:false;
+			}
+		},
+		data(){
+			return {
+				isMenuShow: false
+			};
+		}
 	}
 </script>
 
@@ -31,6 +46,8 @@
 		
 		color: #FFFFFF;
 		background: rgba(48, 46, 46, 0.77);
+		
+		user-select: none;
 	}
 	#logo{
 		display: inline-block;
@@ -58,7 +75,7 @@
 		height: 35px;
 		
 		margin-top: calc((59px - 35px) / 2);
-		margin-left: calc((100% - 593px - 572px) / 2);
+		margin-left: calc((100% - 593px - 599px) / 2);
 		
 		background: #E8E2E2;
 		border-radius: 30px;
@@ -72,13 +89,15 @@
 		
 		margin-top: 12px;
 		margin-left: -84px;
-		margin-right: calc((100% - 593px - 572px) / 2);
+		margin-right: calc((100% - 593px - 599px) / 2);
 		
 		background-image: url('../assets/search.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
 		border-radius: 0px 30px 30px 0px;
+		
+		cursor: pointer;
 	}
 	#msg-ctr{
 		display: inline-block;
@@ -88,6 +107,8 @@
 		text-decoration-line: underline;
 		
 		color: #FFFFFF;
+		
+		cursor: pointer;
 	}
 	#fav{
 		display: inline-block;
@@ -98,15 +119,20 @@
 		text-decoration-line: underline;
 		
 		color: #FFFFFF;
+		
+		cursor: pointer;
 	}
 	#create{
 		display: inline-block;
 		vertical-align: top;
 		height: 100%;
+		width: 70px;
 		margin-left: 57px;
 		padding: 0px 20px 0px 24px;
 		
 		background: rgba(254, 6, 6, 0.6);
+		
+		cursor: pointer;
 	}
 	#create>img{
 		display: inline-block;
@@ -114,6 +140,32 @@
 		width: 20px;
 		height: 20px;
 		margin: calc((59px - 20px) / 2) 0px calc((59px - 20px) / 2) 14px;
+	}
+	#top-menu{
+		display: inline-block;
+		margin: 62px -8px 0px -122px;
+		width: 130px;
+		
+		background: rgba(48, 46, 46, 0.77);
+	}
+	.t-m-button{
+		display: block;
+		width: calc(100% - 10px);
+		height: 54px;
+		
+		margin: 4px 5px;
+		
+		text-align: center;
+		line-height: 54px;
+		font-size: 18px;
+
+		color: #FFFFFF;
+		background: rgba(48, 46, 46, 0.77);
+		border-radius: 6px;
+		
+		background: rgba(48, 46, 46, 0.77);
+		
+		cursor: pointer;
 	}
 	#avatar{
 		display: inline-block;
@@ -129,10 +181,13 @@
 		vertical-align: top;
 		width: 76px;
 		height: 100%;
+		margin-left: 27px;
 		margin-right: 48px;
 		
 		text-decoration-line: underline;
 		
 		color: #FFFFFF;
+		
+		cursor: pointer;
 	}
 </style>

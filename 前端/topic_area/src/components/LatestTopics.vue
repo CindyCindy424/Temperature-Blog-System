@@ -117,6 +117,8 @@
 		background-repeat: no-repeat;
 		background-position: center;
 		border-radius: 0px 30px 30px 0px;
+		
+		cursor: pointer;
 	}
 	.latest-topics-list{
 		width: 100%;
@@ -128,6 +130,8 @@
 
 		background: #FFFFFF;
 		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+		
+		cursor: pointer;
 	}
 	.l-t-i-title{
 		display: block;

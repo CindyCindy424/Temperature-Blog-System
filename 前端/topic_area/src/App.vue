@@ -1,19 +1,17 @@
 <template>
 	<div id="container">
-		<TopNav></TopNav>
+		<TopNav v-on:isMenuShow="isMenuShow=$event;"></TopNav>
 		<div id="page">
 			<div id="photo">
 				<img src="./assets/banner.png" alt="照片">
 			</div>
-			<div>
-				<LatestTopics></LatestTopics>
-				<div id="r-aside">
-					<div id="ask-question">
-					我要提问
-					</div>
-					<MyTopics></MyTopics>
-					<HottestTopics></HottestTopics>
+			<LatestTopics></LatestTopics>
+			<div id="r-aside">
+				<div id="ask-question">
+				我要提问
 				</div>
+				<MyTopics></MyTopics>
+				<HottestTopics></HottestTopics>
 			</div>
 			<footer>
 				Copyright &copy;2020 Temperature team, All Rights Reserved.<br />
@@ -37,8 +35,10 @@
 			MyTopics,
 			HottestTopics
 		},
-		data() {
-			return 0;
+		data(){
+			return {
+				
+			};
 		}
 	}
 </script>
@@ -51,6 +51,7 @@
 	}
 	#container{
 		width: 100%;
+		min-width: 1311px;
 		height: 100%;
 		overflow: auto;
 	}
@@ -77,8 +78,7 @@
 		width: 363px;
 		
 		margin-left: 57px;
-		margin-top: 17px;
-		
+		margin-top: 17px;	
 	}
 	#ask-question{
 		width: 100%;
@@ -92,6 +92,8 @@
 		text-align: center;
 		
 		color: #FFFFFF;
+		
+		cursor: pointer;
 	}
 	footer{
 		padding: 100px 0px;
