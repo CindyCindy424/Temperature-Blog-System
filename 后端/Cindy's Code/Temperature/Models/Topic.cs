@@ -17,6 +17,7 @@ namespace Temperature.Models
         public int? UserId { get; set; }
         public DateTime? TopicUploadTime { get; set; }
         public int? ZoneId { get; set; }
+        public string TopicTitle { get; set; }
 
         public virtual User User { get; set; }
         public virtual Zone Zone { get; set; }

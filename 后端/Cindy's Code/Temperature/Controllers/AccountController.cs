@@ -19,18 +19,15 @@ using Microsoft.AspNetCore.Http;
  */
 
 
-namespace Temperature.Controllers
-{
+namespace Temperature.Controllers {
     [Route("[controller]/[action]")]
     [ApiController]
-    public class AccountController : Controller
-    {
+    public class AccountController : Controller {
         private blogContext entity = new blogContext(); //整体数据库类型
         //private static int idNum = 0;//id自增
         //private static int idForAnnouncement = 0;//公告id自增
         private IWebHostEnvironment My_Environment;
-        public AccountController(IWebHostEnvironment _environment)
-        {
+        public AccountController(IWebHostEnvironment _environment) {
             My_Environment = _environment;
         }
 
@@ -46,8 +43,7 @@ namespace Temperature.Controllers
         /// <response code="404">用户名不存在</response>
         /// <response code="403">密码错误</response>
         [HttpPost]
-        public ActionResult Login(string nick_name, string password)
-        {
+        public ActionResult Login(string nick_name, string password) {
             User user = new User();
             int flag = 0;
             //JsonData jsondata = new JsonData();  //json格式的数据
@@ -56,26 +52,21 @@ namespace Temperature.Controllers
                          where u.NickName == nick_name
                          select u.UserId).Distinct(); //与sql中的select distinct类同
             var id = userid.FirstOrDefault();
-            if (userid.FirstOrDefault() != default)
-            {
+            if (userid.FirstOrDefault() != default) {
                 //var id = userid.FirstOrDefault();
                 user = entity.User.Find(id);  //根据主键id找
-                if (user.Password != password)
-                {
+                if (user.Password != password) {
                     flag = 2;//密码错误
                 }
-                else
-                {
+                else {
                     //jsondata["userID"] = id;
                     flag = 0;//成功
                 }
             }
-            else
-            {
+            else {
                 flag = 1;//用户名不存在
             }
-            var data = new
-            {
+            var data = new {
                 userid = id,
                 loginFlag = flag
             };
@@ -84,16 +75,13 @@ namespace Temperature.Controllers
             //var data = Json(jsondata.ToJson());
             //return Ok(data);
             //return Ok(Json(jsondata.ToJson()));
-            if (flag == 0)
-            {
+            if (flag == 0) {
                 Response.StatusCode = 200;//成功
             }
-            else if (flag == 1)
-            {
+            else if (flag == 1) {
                 Response.StatusCode = 404;//用户名不存在
             }
-            else
-            {
+            else {
                 Response.StatusCode = 403;//密码错误
             }
             //return Ok(data);
@@ -148,8 +136,7 @@ namespace Temperature.Controllers
         /// <response code="200">注册成功</response>
         /// <response code="402">用户名被占用</response>
         [HttpPost]
-        public ActionResult register(string nick_name, string password)
-        {
+        public ActionResult register(string nick_name, string password) {
             User user = new User();
             //JsonData jsondata = new JsonData();  //json格式的数据
             int flag = 0;
@@ -157,13 +144,11 @@ namespace Temperature.Controllers
                     (from c in entity.User
                      where c.NickName == nick_name
                      select c.UserId).Distinct();
-            if (userid.FirstOrDefault() != default)  
-            {
+            if (userid.FirstOrDefault() != default) {
                 flag = 0; //用户名名已经被占用
-               
+
             }
-            else
-            {
+            else {
                 //user.UserId = (++idNum).ToString();
                 //这里id是自增类型
                 user.NickName = nick_name;
@@ -174,12 +159,10 @@ namespace Temperature.Controllers
             }
             //Dictionary<string, string> jsondata = new Dictionary<string, string>();
             //jsondata.Add("RegisterFlag", flag.ToString());
-            var data = new
-            {
+            var data = new {
                 RegisterFlag = flag
             };
-            switch (flag)
-            {
+            switch (flag) {
                 case 0: //用户名被占用
                     Response.StatusCode = 402;
                     break;
@@ -209,8 +192,7 @@ namespace Temperature.Controllers
         /// <response code="404">没有找到该用户</response>
         /// <response code ="200">成功修改用户信息</response>
         [HttpPost]
-        public JsonResult personalInfo(string nick_name, string gender, string location, string year, string month, string day, string email, string tel, string wechat)
-        {
+        public JsonResult personalInfo(string nick_name, string gender, string location, string year, string month, string day, string email, string tel, string wechat) {
             //User user = new User();
             int flag = 0;
             var userid =
@@ -220,12 +202,10 @@ namespace Temperature.Controllers
             var id = userid.FirstOrDefault();
             var user = entity.User.Find(id); //在数据库中根据key找到相应记录
 
-            if (id == default)
-            {
+            if (id == default) {
                 flag = 0; //没有找到该用户
             }
-            else
-            {
+            else {
                 //user.UserId = id;
                 user.Gender = gender;
                 user.Location = location;
@@ -248,17 +228,14 @@ namespace Temperature.Controllers
                 entity.SaveChanges();
                 flag = 1; //信息存储完成
             }
-            var data = new
-            {
+            var data = new {
                 Infoflag = flag
             };
-            if (flag == 0)
-            {
+            if (flag == 0) {
                 Response.StatusCode = 404;//没有找到该用户
                 return Json(data);
             }
-            else
-            {
+            else {
                 Response.StatusCode = 200; //成功修改信息
                 return Json(data);
             }
@@ -305,8 +282,7 @@ namespace Temperature.Controllers
         /// <response code="404">没有找到该用户</response>
         /// <response code ="200">成功修改用户头像</response>
         [HttpPost]
-        public JsonResult updateAvatr([FromForm] IFormCollection collection, string nick_name)
-        {
+        public JsonResult updateAvatr([FromForm] IFormCollection collection, string nick_name) {
             //var files = Request.Form.Files;
             int flag = 0;
             var userid =
@@ -314,14 +290,13 @@ namespace Temperature.Controllers
                      where c.NickName == nick_name
                      select c.UserId).Distinct();
             var id = userid.FirstOrDefault();
-            if (id == default)
-            {
+            if (id == default) {
                 flag = 0; //没有找到该用户
                 Response.StatusCode = 202;//没有该用户
                 return Json(new { code = 404, UploadFlag = flag });
             }
             var user = entity.User.Find(id); //在数据库中根据key找到相应记录
-            
+
 
 
             FormFileCollection files = (FormFileCollection)collection.Files;
@@ -332,13 +307,11 @@ namespace Temperature.Controllers
             string path = Guid.NewGuid().ToString() + fileExtention;
             string basepath = My_Environment.ContentRootPath;//en.WebRootPath-》wwwroot的目录; .ContentRootPath到达WebApplication的项目目录
             string savePath = basepath + "\\user's_avatr\\" + path;
-            if (!Directory.Exists(savePath))
-            {
+            if (!Directory.Exists(savePath)) {
                 Directory.CreateDirectory(savePath);
             }
             //  using (FileStream fstream = System.IO.File.Create(newFile)) 也可以
-            using (FileStream fstream = new FileStream(savePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            {
+            using (FileStream fstream = new FileStream(savePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
                 file.CopyTo(fstream); // 复制文件
                 fstream.Flush();//清空缓存区
                 user.Avatr = savePath;
@@ -357,8 +330,7 @@ namespace Temperature.Controllers
         /// <param name="nick_name">用户名</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult getAvatrResource(string nick_name)
-        {
+        public JsonResult getAvatrResource(string nick_name) {
             var userid =
                     (from c in entity.User
                      where c.NickName == nick_name
@@ -379,16 +351,14 @@ namespace Temperature.Controllers
         /// <response code = "200">成功</response>
         /// <response code ="404">没有找到该用户</response>
         [HttpPost]
-        public JsonResult getUserInfoByNickName(string nick_name)
-        {
+        public JsonResult getUserInfoByNickName(string nick_name) {
             int flag = 0;
             var userid =
                     (from c in entity.User
                      where c.NickName == nick_name
                      select c.UserId).Distinct();
             var id = userid.FirstOrDefault();
-            if (id == default)
-            {
+            if (id == default) {
                 flag = 0; //没有找到该用户
                 Response.StatusCode = 404;//没有该用户
                 return Json(new { code = 202, UploadFlag = flag });
@@ -414,8 +384,7 @@ namespace Temperature.Controllers
         /// <response code = "404">没有找到该用户</response>
         /// <response code ="200">成功</response>
         [HttpPost]
-        public JsonResult createAnnouncementByNickName(string nick_name,string content)
-        {
+        public JsonResult createAnnouncementByNickName(string nick_name, string content) {
             int flag = 0;
             var userid =
                     (from c in entity.User
@@ -423,21 +392,18 @@ namespace Temperature.Controllers
                      select c.UserId).Distinct();
             var id = userid.FirstOrDefault();
 
-            if (id == default)
-            {
+            if (id == default) {
                 flag = 0; //没有找到该用户
                 Response.StatusCode = 404;//没有找到该用户
             }
-            else
-            {
+            else {
                 var announcementRecordID =
                 (from c in entity.Announcement
                  where c.UserId == id
                  select c.AnnouncementId).Distinct(); //根据userid找到记录(userid不是主码，不能直接find)
                 var announcement = entity.Announcement.Find(announcementRecordID.FirstOrDefault()); //在数据库中根据key找到相应记录
 
-                if (announcement == null)
-                {
+                if (announcement == null) {
                     flag = 1; //该用户没有添加过公告，新建公告
                     var announcement2 = new Announcement();
                     announcement2.UserId = id;
@@ -450,8 +416,7 @@ namespace Temperature.Controllers
 
                     Response.StatusCode = 200;//成功新建
                 }
-                else
-                {
+                else {
                     //该用户已经创建过公告，需要rewrite
                     flag = 2;
                     //announcement.UserId = id;
@@ -465,9 +430,9 @@ namespace Temperature.Controllers
                     Response.StatusCode = 200;//成功重写公告
                 }
 
-               
+
             }
-            return Json(new { Userid = id,CreateFlag = flag });
+            return Json(new { Userid = id, CreateFlag = flag });
         }
 
         /// <summary>
@@ -479,16 +444,14 @@ namespace Temperature.Controllers
         /// <response code ="403">该用户没有创建过公告</response>
         /// <response code ="200">成功删除公告</response>
         [HttpPost]
-        public JsonResult deleteAnnouncementByNickName(string nick_name)
-        {
+        public JsonResult deleteAnnouncementByNickName(string nick_name) {
             int flag = 0;
             var userid =
                     (from c in entity.User
                      where c.NickName == nick_name
                      select c.UserId).Distinct();
             var id = userid.FirstOrDefault();
-            if (id == default)
-            {
+            if (id == default) {
                 flag = 0; //没有找到该用户
                 Response.StatusCode = 404;//没有找到该用户
                 return Json(new { DeleteFlag = flag });
@@ -498,8 +461,7 @@ namespace Temperature.Controllers
                  where c.UserId == id
                  select c.AnnouncementId).Distinct(); //根据userid找到记录(userid不是主码，不能直接find)
             var announcement = entity.Announcement.Find(announcementRecordID.FirstOrDefault()); //在数据库中根据key找到相应记录
-            if (announcement == null)
-            {
+            if (announcement == null) {
                 flag = 1;//该用户没有创建过公告
                 Response.StatusCode = 403;//该用户没有创建过公告
                 return Json(new { DeleteFlag = flag });
@@ -527,16 +489,14 @@ namespace Temperature.Controllers
         /// <response code ="404">没有找到该用户</response>
         /// <response code ="200">成功返回</response>
         [HttpPost]
-        public JsonResult getAnnouncementByNickName(string nick_name)
-        {
+        public JsonResult getAnnouncementByNickName(string nick_name) {
             int flag = 0;
             var userid =
                     (from c in entity.User
                      where c.NickName == nick_name
                      select c.UserId).Distinct();
             var id = userid.FirstOrDefault();
-            if (id == default)
-            {
+            if (id == default) {
                 flag = 0; //没有找到该用户
                 Response.StatusCode = 404;//没有找到该用户
                 //return Json(new { GetFlag = flag });
@@ -546,8 +506,7 @@ namespace Temperature.Controllers
                 (from c in entity.Announcement
                  where c.UserId == id
                  select c.AnnouncementId).Distinct(); //根据userid找到记录(userid不是主码，不能直接find)
-            if (announcementRecordID == null)
-            {
+            if (announcementRecordID == null) {
                 flag = 1;//该用户没有创建的公告，无法返回
                 Response.StatusCode = 403;
 
@@ -569,8 +528,7 @@ namespace Temperature.Controllers
         /// <response code = "200">成功</response>
         /// <response code ="404">用户不存在</response>
         [HttpPost]
-        public JsonResult createFollowByNickNames(string nameOfBlogger,string nameOfFans)
-        {
+        public JsonResult createFollowByNickNames(string nameOfBlogger, string nameOfFans) {
             int flag = 0;
             var BloggerId =
                     (from c in entity.User
@@ -582,8 +540,7 @@ namespace Temperature.Controllers
                      where c.NickName == nameOfFans
                      select c.UserId).Distinct();
             var id_2 = FansId.FirstOrDefault();
-            if (id_1 == default || id_2 ==default)
-            {
+            if (id_1 == default || id_2 == default) {
                 if (id_1 == default && id_2 == default)
                     flag = 1; //两个用户都不存在
                 else if (id_1 == default)
@@ -595,8 +552,8 @@ namespace Temperature.Controllers
                 return Json(new { GetFlag = flag });
             }
 
-            var newFollow = new UserFollow{ ActiveUserId = id_2, PassiveUserId = id_1 };
-            entity.UserFollow.Add(newFollow); 
+            var newFollow = new UserFollow { ActiveUserId = id_2, PassiveUserId = id_1 };
+            entity.UserFollow.Add(newFollow);
             entity.SaveChanges();
 
             var user = entity.User.Find(id_1);  //user里面更新被关注数量
@@ -611,7 +568,7 @@ namespace Temperature.Controllers
 
             Response.StatusCode = 200;//关注成功
             flag = 4;//成功
-            return Json(new { CreateFlag = flag});
+            return Json(new { CreateFlag = flag });
         }
 
         /// <summary>
@@ -623,8 +580,7 @@ namespace Temperature.Controllers
         /// <response code ="404">用户不存在</response>
         /// <response code ="200">成功</response>
         [HttpPost]
-        public JsonResult deleteFollowByNickName(string nameOfBlogger, string nameOfFans)
-        {
+        public JsonResult deleteFollowByNickName(string nameOfBlogger, string nameOfFans) {
             int flag = 0;
             var BloggerId =
                     (from c in entity.User
@@ -636,8 +592,7 @@ namespace Temperature.Controllers
                      where c.NickName == nameOfFans
                      select c.UserId).Distinct();
             var id_2 = FansId.FirstOrDefault();
-            if (id_1 == default || id_2 == default)
-            {
+            if (id_1 == default || id_2 == default) {
                 if (id_1 == default && id_2 == default)
                     flag = 1; //两个用户都不存在
                 else if (id_1 == default)
@@ -649,7 +604,7 @@ namespace Temperature.Controllers
                 return Json(new { GetFlag = flag });
             }
 
-            var follow = entity.UserFollow.Find(id_2,id_1);
+            var follow = entity.UserFollow.Find(id_2, id_1);
             entity.Entry(follow).State = EntityState.Deleted;//删除该项
             entity.SaveChanges();
             Response.StatusCode = 200;//成功
@@ -664,8 +619,7 @@ namespace Temperature.Controllers
         /// <param name="nick_name">博主用户名</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult getFansListByNickName(string nick_name)
-        {
+        public JsonResult getFansListByNickName(string nick_name) {
             //int flag = 0;
             var userid =
                     (from c in entity.User
@@ -688,8 +642,7 @@ namespace Temperature.Controllers
         /// <param name="nick_name">博主用户名</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult getFollowListByNickName(string nick_name)
-        {
+        public JsonResult getFollowListByNickName(string nick_name) {
             var userid =
                     (from c in entity.User
                      where c.NickName == nick_name
@@ -707,10 +660,10 @@ namespace Temperature.Controllers
 
 
 
-    }    
+    }
 
 
 
 }
-    
+
 

@@ -42,7 +42,7 @@ namespace Temperature.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=cindy0424_mysql;database=blog_new");
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=lym19981120;database=blog");
             }
         }
 
@@ -524,6 +524,8 @@ namespace Temperature.Models
                 entity.Property(e => e.AnswerNum).HasColumnName("ANSWER_NUM");
 
                 entity.Property(e => e.TopicContent).HasColumnName("TOPIC_CONTENT");
+
+                entity.Property(e => e.TopicTitle).HasColumnName("TOPIC_TITLE");
 
                 entity.Property(e => e.TopicUploadTime).HasColumnName("TOPIC_UPLOAD_TIME");
 

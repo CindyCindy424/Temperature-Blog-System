@@ -4,12 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Temperature.Controllers
-{
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
+namespace Temperature.Controllers {
+    public class HomeController : Controller {
+        public IActionResult Index() {
             return View();
         }
     }

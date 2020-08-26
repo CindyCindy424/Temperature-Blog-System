@@ -4,6 +4,12 @@
 ### 主要修改内容：1）所有的id改为int类型，加上了auto_increment
 ### 所有的auto_increment = 0
 
+### 修改记录
+### 0826修改
+### 修改人：陆昱珉
+### 主要修改内容：1）TOPIC表中增加字段TOPIC_TITLE text
+### 所有的auto_increment = 0
+
 # 用户表
 create table USER (
     USER_ID int auto_increment,  #auto_increment=0，但是只能后续设置
@@ -174,6 +180,7 @@ alter table PHOTO_COMMENT auto_increment=0;
 #话题表
 create table TOPIC (
     TOPIC_ID int auto_increment,
+    TOPIC_TITLE text,
     TOPIC_CONTENT text,
     ANSWER_NUM INTEGER,
     USER_ID int,
