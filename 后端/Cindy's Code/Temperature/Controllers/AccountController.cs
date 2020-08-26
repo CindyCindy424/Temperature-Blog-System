@@ -26,8 +26,8 @@ namespace Temperature.Controllers
     public class AccountController : Controller
     {
         private blogContext entity = new blogContext(); //整体数据库类型
-        private static int idNum = 0;//id自增
-        private static int idForAnnouncement = 0;//公告id自增
+        //private static int idNum = 0;//id自增
+        //private static int idForAnnouncement = 0;//公告id自增
         private IWebHostEnvironment My_Environment;
         public AccountController(IWebHostEnvironment _environment)
         {
@@ -598,6 +598,17 @@ namespace Temperature.Controllers
             var newFollow = new UserFollow{ ActiveUserId = id_2, PassiveUserId = id_1 };
             entity.UserFollow.Add(newFollow); 
             entity.SaveChanges();
+
+            var user = entity.User.Find(id_1);  //user里面更新被关注数量
+            var num = user.FollowNum;
+            if (num == default)
+                user.FollowNum = 1;
+            else
+                user.FollowNum = num + 1;
+            entity.Entry(user).State = EntityState.Modified;
+            entity.SaveChanges();
+
+
             Response.StatusCode = 200;//关注成功
             flag = 4;//成功
             return Json(new { CreateFlag = flag});
