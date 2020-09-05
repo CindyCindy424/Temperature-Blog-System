@@ -88,7 +88,7 @@
 			}
 		},
     created:function(){
-      
+
     }
   }
 </script>
@@ -102,19 +102,25 @@
     display: flex;
     flex-direction: column;
     background-color: #E5E5E5;
+    min-width: 1200px;
   }
   #photo{
+    display: flex;
+    justify-content: center;
+
   	height: 352px;
-    width: calc(870px + 57px + 363px);
+  	width: 100%;
     align-self: center;
+    overflow: hidden;
   }
   #photo>img{
-  	width: 100%;
+    width: calc(870px + 57px + 363px);
     height: 100%;
   }
   #main{
     display: flex;
     justify-content: center;
+    padding: 0px 20px;
   }
   #latest-topics{
   	width: 870px;
@@ -266,6 +272,7 @@
   }
   #right-aside{
     display: flex;
+    flex-shrink: 0;
     flex-direction: column;
   	width: 363px;
   	margin-left: 57px;
