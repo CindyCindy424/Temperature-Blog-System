@@ -319,5 +319,8 @@
     margin: 20px 0px;
     background-color: white;
   }
+  .ql-editor{
+       height:300px;
+   }
 
 </style>
