@@ -11,12 +11,11 @@
         		<div id="topics-search-button"></div>
         	</div>
         	<div id="latest-topics-list">
-        		<div class="l-t-item" v-for="item in LTopics" :key="item.topicID">
-        			<span class="l-t-i-title">{{item.title}}</span>
-        			<div class="l-t-i-content">{{item.content}}</div>
-        			<span class="l-t-i-date">{{item.date}}</span>
-        			<span class="l-t-i-time">{{item.time}}</span>
-        			<span class="l-t-i-answerCount">回答：{{item.answerCount}}</span>
+        		<div class="l-t-item" v-for="item in LTopics" :key="item.TopicId">
+        			<router-link :to="{path:'/ViewTopic', query:{id:item.TopicId}}" class="l-t-i-title">{{item.TopicTitle}}</router-link>
+        			<router-link to="/ViewTopic" class="l-t-i-content">{{item.TopicContent}}</router-link>
+        			<span class="l-t-i-time">{{item.TopicUploadTime}}</span>
+        			<span class="l-t-i-answerCount">回答：{{item.AnswerNum}}</span>
         			<span class="l-t-i-delete">删除</span>
         		</div>
         	</div>
@@ -29,7 +28,7 @@
         	</div>
         </div>
         <div id="right-aside">
-            <div id="ask-question">我要提问</div>
+            <router-link to="/PostTopic" id="ask-question">我要提问</router-link>
             <div id="my-topics">
               <div id="my-topics-title">我的话题</div>
               <div id="my-topisc-msg">
@@ -61,44 +60,9 @@
     name: 'TopicArea',
 		data(){
 			return{
-				LTopics: [
-				{
-					topicID: 1,
-					title: "啥都行",
-					content: "谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的谁说的",
-					date: "2020-08-22",
-					time: "22:20",
-					answerCount: 22
-				},
-				{
-					topicID: 2,
-					title: "啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行啥都行",
-					content: "谁说的",
-					date: "2020-08-22",
-					time: "22:20",
-					answerCount: 22
-				}
-				],
-        MTopics:[
-          {
-            topicID: 1,
-            title: "如何做一个博客网站啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊"
-          },
-          {
-            topicID: 2,
-            title: "如何做一个博客网站呢"
-          }
-        ],
-        HTopics:[
-          {
-            topicID: 1,
-            title: "如何做一个博客网站"
-          },
-          {
-            topicID: 2,
-            title: "如何做一个博客网站呢"
-          }
-        ],
+				LTopics: [],
+        MTopics:[],
+        HTopics:[],
 				pageNums:[
 					{page: 1},
 					{page: 2},
@@ -106,11 +70,31 @@
 				],
 				selectedPage: 1,
 				myTopicsNum: 40,
-				myTopicsAnsNum: 0
+				myTopicsAnsNum: 0,
+        ajax: 0,
 			}
 		},
     created:function(){
-
+      this.getLatestTopics();
+    },
+    methods:{
+      getLatestTopics(){
+        var pageNum = 1;
+        var pageSize = 10;
+        this.ajax = new XMLHttpRequest();
+        this.ajax.open("POST", "http://139.224.255.43:7779/Topic/getTopicByPage?pageNum="+pageNum+"&pageSize="+pageSize, true);
+        this.ajax.onreadystatechange = this.getLT;
+        this.ajax.send();
+      },
+      getLT(){
+        if (this.ajax.readyState == 4 && this.ajax.status == 200) {
+          var receive = JSON.parse(JSON.parse(this.ajax.responseText).Result);
+          this.LTopics = receive;
+          for(var i = 0; i < this.LTopics.length; i++){
+            this.LTopics[i].TopicUploadTime=this.LTopics[i].TopicUploadTime.replace("T","  ");
+          }
+        }
+      }
     }
   }
 </script>
@@ -202,6 +186,7 @@
   	font-size: 24px;
   	line-height: 24px;
   	color: #000000;
+    text-decoration: none;
 
     /*实现超过一行的显示省略号*/
     white-space: nowrap;
@@ -212,6 +197,7 @@
   	margin-top: 10px;
     margin-bottom: 10px;
   	height: 50px;
+    text-decoration: none;
 
   	font-size: 18px;
   	line-height: 25px;
@@ -224,18 +210,10 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  .l-t-i-date{
+  .l-t-i-time{
   	display: inline-block;
   	width: max-content;
 
-  	font-size: 18px;
-  	line-height: 18px;
-  	color: #000000;
-  }
-  .l-t-i-time{
-  	display: inline-block;
-  	margin-left: 20px;
-  	width: fit-content;
   	font-size: 18px;
   	line-height: 18px;
   	color: #000000;
@@ -314,6 +292,7 @@
   	text-align: center;
   	color: #FFFFFF;
   	cursor: pointer;
+    text-decoration: none;
   }
   #my-topics{
   	margin-top: 20px;

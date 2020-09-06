@@ -77,9 +77,22 @@
   import 'quill/dist/quill.bubble.css'
   export default{
     components: {
-        quillEditor
+      quillEditor
+    },
+    data(){
+      return {
+        TopicId: 0,
+      };
+    },
+    created:function(){
+      this.getTopicId();
+    },
+    methods:{
+      getTopicId(){
+        this.TopicId = this.$route.query.id;
+        console.log(this.TopicId);
       }
-
+    }
   }
 </script>
 
@@ -182,7 +195,7 @@
   .left-aside-list-item{
     padding: 10px 20px;
     cursor: pointer;
-    
+
     /*实现超过一行的显示省略号*/
     white-space: nowrap;
     text-overflow: ellipsis;
