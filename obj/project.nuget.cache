@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EWe6SItcGqJHrP7QnZX3cCqZcUj24ZTpk/cBisB1jYxBeoUs++dlrdUpAKfUU8yG+89DcyWIeIph4SMhGTvmWg==",
+  "dgSpecHash": "MaV4RBSljNyUVwl/xCTxaGmNHI3zqe9cyy5kR8b3S8+cqJLN1T2NkpCLZ2lFialacNa2dk6gOyeeMjhg+VPtTA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature\\Temperature.csproj",
+  "projectFilePath": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature-github\\Temperature-Blog-System\\Temperature.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
@@ -10,8 +10,11 @@
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\k4os.compression.lz4\\1.1.11\\k4os.compression.lz4.1.1.11.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\k4os.compression.lz4.streams\\1.1.11\\k4os.compression.lz4.streams.1.1.11.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\k4os.hash.xxhash\\1.0.6\\k4os.hash.xxhash.1.0.6.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.aspnet.razor\\3.2.7\\microsoft.aspnet.razor.3.2.7.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.7\\microsoft.aspnet.webapi.client.5.2.7.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.aspnet.webapi.core\\5.2.7\\microsoft.aspnet.webapi.core.5.2.7.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.aspnet.webpages\\3.2.7\\microsoft.aspnet.webpages.3.2.7.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.7\\microsoft.aspnetcore.authentication.jwtbearer.3.1.7.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.bcl.hashcode\\1.1.0\\microsoft.bcl.hashcode.1.1.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
@@ -33,9 +36,15 @@
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\3.1.7\\microsoft.extensions.logging.abstractions.3.1.7.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.extensions.options\\3.1.7\\microsoft.extensions.options.3.1.7.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.extensions.primitives\\3.1.7\\microsoft.extensions.primitives.3.1.7.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\6.7.1\\microsoft.identitymodel.jsonwebtokens.6.7.1.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.identitymodel.logging\\6.7.1\\microsoft.identitymodel.logging.6.7.1.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.identitymodel.protocols\\5.5.0\\microsoft.identitymodel.protocols.5.5.0.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\5.5.0\\microsoft.identitymodel.protocols.openidconnect.5.5.0.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.identitymodel.tokens\\6.7.1\\microsoft.identitymodel.tokens.6.7.1.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.openapi\\1.1.4\\microsoft.openapi.1.1.4.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.web.infrastructure\\1.0.0\\microsoft.web.infrastructure.1.0.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
@@ -67,6 +76,7 @@
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\ssh.net\\2016.1.0\\ssh.net.2016.1.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\sshnet.security.cryptography\\1.2.0\\sshnet.security.cryptography.1.2.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\swashbuckle.aspnetcore\\5.5.1\\swashbuckle.aspnetcore.5.5.1.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\swashbuckle.aspnetcore.annotations\\5.5.1\\swashbuckle.aspnetcore.annotations.5.5.1.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.5.1\\swashbuckle.aspnetcore.swagger.5.5.1.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.5.1\\swashbuckle.aspnetcore.swaggergen.5.5.1.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.5.1\\swashbuckle.aspnetcore.swaggerui.5.5.1.nupkg.sha512",
@@ -95,6 +105,7 @@
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.globalization\\4.3.0\\system.globalization.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.globalization.calendars\\4.3.0\\system.globalization.calendars.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.globalization.extensions\\4.3.0\\system.globalization.extensions.4.3.0.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.7.1\\system.identitymodel.tokens.jwt.6.7.1.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.io\\4.3.0\\system.io.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.io.compression\\4.3.0\\system.io.compression.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.io.compression.zipfile\\4.3.0\\system.io.compression.zipfile.4.3.0.nupkg.sha512",
@@ -127,7 +138,7 @@
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.runtime.serialization.primitives\\4.3.0\\system.runtime.serialization.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.security.cryptography.algorithms\\4.3.0\\system.security.cryptography.algorithms.4.3.0.nupkg.sha512",
-    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.security.cryptography.cng\\4.3.0\\system.security.cryptography.cng.4.3.0.nupkg.sha512",
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.security.cryptography.csp\\4.3.0\\system.security.cryptography.csp.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.security.cryptography.encoding\\4.3.0\\system.security.cryptography.encoding.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\system.security.cryptography.openssl\\4.3.0\\system.security.cryptography.openssl.4.3.0.nupkg.sha512",
@@ -158,8 +169,38 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
+      "message": "已使用“.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8”而不是项目目标框架“.NETCoreApp,Version=v3.1”还原包“Microsoft.AspNet.Razor 3.2.7”。此包可能与项目不完全兼容。",
+      "libraryId": "Microsoft.AspNet.Razor",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
       "message": "已使用“.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8”而不是项目目标框架“.NETCoreApp,Version=v3.1”还原包“Microsoft.AspNet.WebApi.Core 5.2.7”。此包可能与项目不完全兼容。",
       "libraryId": "Microsoft.AspNet.WebApi.Core",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "已使用“.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8”而不是项目目标框架“.NETCoreApp,Version=v3.1”还原包“Microsoft.AspNet.WebPages 3.2.7”。此包可能与项目不完全兼容。",
+      "libraryId": "Microsoft.AspNet.WebPages",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "已使用“.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8”而不是项目目标框架“.NETCoreApp,Version=v3.1”还原包“Microsoft.Web.Infrastructure 1.0.0”。此包可能与项目不完全兼容。",
+      "libraryId": "Microsoft.Web.Infrastructure",
       "targetGraphs": [
         ".NETCoreApp,Version=v3.1"
       ]

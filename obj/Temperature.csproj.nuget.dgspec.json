@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature\\Temperature.csproj": {}
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature-github\\Temperature-Blog-System\\Temperature.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature\\Temperature.csproj": {
+    "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature-github\\Temperature-Blog-System\\Temperature.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature\\Temperature.csproj",
+        "projectUniqueName": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature-github\\Temperature-Blog-System\\Temperature.csproj",
         "projectName": "Temperature",
-        "projectPath": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature\\Temperature.csproj",
+        "projectPath": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature-github\\Temperature-Blog-System\\Temperature.csproj",
         "packagesPath": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature\\obj\\",
+        "outputPath": "C:\\Users\\Administrator.DESKTOP-B7FTBL8\\Desktop\\Temperature-github\\Temperature-Blog-System\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "E:\\Microsoft\\Xamarin\\NuGet\\"
@@ -50,6 +50,14 @@
               "target": "Package",
               "version": "[5.2.7, )"
             },
+            "Microsoft.AspNet.WebPages": {
+              "target": "Package",
+              "version": "[3.2.7, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[3.1.7, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -67,6 +75,14 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.5.1, )"
+            },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[5.5.1, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.7.1, )"
             }
           },
           "imports": [

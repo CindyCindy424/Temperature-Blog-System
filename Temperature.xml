@@ -1,0 +1,329 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Temperature</name>
+    </assembly>
+    <members>
+        <member name="M:Temperature.Controllers.AccountController.Login(System.String,System.String)">
+            <summary>
+            登录
+            </summary>
+            <param name="nick_name">用户名</param>
+            <param name="password">密码</param>
+            <returns></returns>
+            <response code="200">成功</response>
+            <response code="404">用户名不存在</response>
+            <response code="403">密码错误</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.register(System.String,System.String)">
+            <summary>
+            注册
+            </summary>
+            <param name="nick_name"></param>
+            <param name="password"></param>
+            <returns></returns>
+            <response code="200">注册成功</response>
+            <response code="402">用户名被占用</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.personalInfo(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            维护个人信息（不含头像维护）
+            </summary>
+            <param name="nick_name"></param>
+            <param name="gender"></param>
+            <param name="location"></param>
+            <param name="year"></param>
+            <param name="month"></param>
+            <param name="day"></param>
+            <param name="email"></param>
+            <param name="tel"></param>
+            <param name="wechat"></param>
+            <returns></returns>
+            <response code="404">没有找到该用户</response>
+            <response code ="200">成功修改用户信息</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.updateAvatr(Microsoft.AspNetCore.Http.IFormCollection,System.String)">
+            <summary>
+            上传头像
+            </summary>
+            <param name="collection">[FromForm]头像文件</param>
+            <param name="nick_name">昵称</param>
+            <returns></returns>
+            <response code="404">没有找到该用户</response>
+            <response code ="200">成功修改用户头像</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.getAvatrResource(System.String)">
+            <summary>
+            返回用户头像（存储的地址）
+            </summary>
+            <param name="nick_name">用户名</param>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.getUserInfoByNickName(System.String)">
+            <summary>
+            查询用户所有基本信息
+            </summary>
+            <param name="nick_name">用户名</param>
+            <returns></returns>
+            <response code = "200">成功</response>
+            <response code ="404">没有找到该用户</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.createAnnouncementByNickName(System.String,System.String)">
+            <summary>
+            添加/更新 公告内容
+            </summary>
+            <param name="nick_name">用户名</param>
+            <param name="content">公告内容</param>
+            <returns></returns>
+            <response code = "404">没有找到该用户</response>
+            <response code ="200">成功</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.deleteAnnouncementByNickName(System.String)">
+            <summary>
+            删除公告
+            </summary>
+            <param name="nick_name">用户名</param>
+            <returns></returns>
+            <response code = "404">没有找到该用户</response>
+            <response code ="403">该用户没有创建过公告</response>
+            <response code ="200">成功删除公告</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.getAnnouncementByNickName(System.String)">
+            <summary>
+            获取用户公告内容
+            </summary>
+            <param name="nick_name">用户名</param>
+            <returns></returns>
+            <response code ="403">该没有创建的公告</response>
+            <response code ="404">没有找到该用户</response>
+            <response code ="200">成功返回</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.createFollowByNickNames(System.String,System.String)">
+            <summary>
+            创建关注关系
+            </summary>
+            <param name="nameOfBlogger">被关注者</param>
+            <param name="nameOfFans">关注者</param>
+            <returns></returns>
+            <response code = "200">成功</response>
+            <response code ="404">用户不存在</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.deleteFollowByNickName(System.String,System.String)">
+            <summary>
+            删除关注关系
+            </summary>
+            <param name="nameOfBlogger">被关注者</param>
+            <param name="nameOfFans">关注者</param>
+            <returns></returns>
+            <response code ="404">用户不存在</response>
+            <response code ="200">成功</response>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.getFansListByNickName(System.String)">
+            <summary>
+            返回粉丝列表
+            </summary>
+            <param name="nick_name">博主用户名</param>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.AccountController.getFollowListByNickName(System.String)">
+            <summary>
+            返回关注的博主列表
+            </summary>
+            <param name="nick_name">博主用户名</param>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.createAlbumByID(System.String,System.String,System.String)">
+            <summary>
+            新建相簿
+            </summary>
+            <param name="albumIntro"></param>
+            <param name="albumName"></param>
+            <param name="userID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法创建，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.createAlbumHistoryByID(System.String,System.String)">
+            <summary>
+            记录相簿访问
+            </summary>
+            <param name="albumID"></param>
+            <param name="userID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法新建记录，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.createPhotoByID(Microsoft.AspNetCore.Http.IFormFileCollection,System.String,System.String)">
+            <summary>
+            上传图片到指定相册 支持多文件上传
+            </summary>
+            <param name="uploadedPhoto"></param>
+            <param name="albumID"></param>
+            <param name="userID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法新建图片，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.createPhotoCommentByID(System.String,System.String,System.String)">
+            <summary>
+            评论图片
+            </summary>
+            <param name="content"></param>
+            <param name="photoID"></param>
+            <param name="userID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法评论图片，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.deleteAlbumByID(System.String,System.String)">
+            <summary>
+            删除相册本地内容以及数据库记录
+            </summary>
+            <param name="albumID"></param>
+            <param name="userID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法删除相册，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.deleteAlbumHistoryByID(System.String,System.String)">
+            <summary>
+            删除相册访问历史记录
+            </summary>
+            <param name="albumID"></param>
+            <param name="userID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法删除历史，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.deletePhotoByID(System.String)">
+            <summary>
+            删除某一张图片
+            </summary>
+            <param name="photoID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法删除，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.deletePhotoCommentByID(System.String)">
+            <summary>
+            刪除图片评论
+            </summary>
+            <param name="commentID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法删除，出现错误/异常</response>
+            <returns>123</returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.getAlbumHistryByID(System.String)">
+            <summary>
+            获取相簿浏览历史信息
+            </summary>
+            <param name="albumID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法获取，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.getAllAlbumByID(System.String)">
+            <summary>
+            获取所有相簿
+            </summary>
+            <param name="userID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法获取，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.getAllPhotoByID(System.String,System.String)">
+            <summary>
+            获取相簿内所有图片
+            </summary>
+            <param name="albumID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法获取，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.getPhotoCommentByID(System.String)">
+            <summary>
+            获取图片评论
+            </summary>
+            <param name="photoID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法获取，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.getPhotoHistoryByID(System.String)">
+            <summary>
+            获取图片浏览历史
+            </summary>
+            <param name="photoID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法获取，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.PhotoController.setPhotoLike(System.String)">
+            <summary>
+            图片点赞量更新
+            </summary>
+            <param name="photoID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法更新点赞，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.TopicController.createTopicAnswerByID(System.String,System.String,System.String)">
+            <summary>
+            创建话题回复
+            </summary>
+            <param name="content"></param>
+            <param name="topicID"></param>
+            <param name="userID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.TopicController.createTopicByID(System.String,System.String,System.String,System.String)">
+            <summary>
+            创建话题
+            </summary>
+            <param name="content"></param>
+            <param name="title"></param>
+            <param name="userID"></param>
+            <param name="zoneID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法创建</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.TopicController.deleteTopicAnswerByID(System.String)">
+            <summary>
+            根据ID删除话题评论
+            </summary>
+            <param name="answerID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法删除，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.TopicController.deleteTopicByID(System.String)">
+            <summary>
+            根据用户ID删除相应用户
+            </summary>
+            <param name="topicID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法删除，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.TopicController.getTopicByPage(System.Int32,System.Int32,System.String)">
+            <summary>
+            分页获取topic
+            </summary>
+            <param name="pageNum">页号</param>
+            <param name="pageSize">每页大小</param>
+            <response code="200">成功</response>
+            <response code="403">无法获取，出现错误/异常</response>
+            <returns></returns>
+        </member>
+        <member name="M:Temperature.Controllers.TopicController.getTopicCommentByID(System.String)">
+            <summary>
+            获取topicID话题下的评论
+            </summary>
+            <param name="topicID"></param>
+            <response code="200">成功</response>
+            <response code="403">无法获取，出现错误/异常</response>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

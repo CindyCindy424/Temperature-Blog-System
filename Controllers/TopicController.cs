@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
 using Temperature.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
+
 namespace Temperature.Controllers {
+    [Authorize]
     [Route("[controller]/[action]")]
     [ApiController]
     public class TopicController : Controller {
@@ -25,19 +30,24 @@ namespace Temperature.Controllers {
         [HttpPost]
         public ActionResult createTopicAnswerByID(string content, string topicID, string userID) {
             DateTime dateTime = DateTime.Now; //获取当前时间
-            Topic topic = new Topic {
-                TopicId = int.Parse(topicID),
-                TopicContent = content,
-                AnswerNum = 0,
-                UserId = int.Parse(userID),
-                TopicUploadTime = dateTime,
-            };
-            entity.Add(topic);
-            int nums = entity.SaveChanges();
+            int cerateTopicAnswerFlag = 0;
+            try {
+                Topic topic = new Topic {
+                    TopicId = int.Parse(topicID),
+                    TopicContent = content,
+                    AnswerNum = 0,
+                    UserId = int.Parse(userID),
+                    TopicUploadTime = dateTime,
+                };
+                entity.Add(topic);
+                int nums = entity.SaveChanges();
+                cerateTopicAnswerFlag = 1;
+            } catch (Exception e) {
+                cerateTopicAnswerFlag = 0;
+                Console.WriteLine(e.Message);
+            }
 
-
-
-            return Json(new { a = 1 });
+            return Json(new { cerateTopicAnswerFlag = cerateTopicAnswerFlag });
         }
 
         /// <summary>
@@ -50,6 +60,7 @@ namespace Temperature.Controllers {
         /// <response code="200">成功</response>
         /// <response code="403">无法创建</response>
         /// <returns></returns>
+        [SwaggerResponse(200, "文档注释", typeof(Json))]
         [HttpPost]
         public ActionResult createTopicByID(string content, string title, string userID, string zoneID) {
             DateTime dateTime = DateTime.Now; //获取当前时间
@@ -72,8 +83,6 @@ namespace Temperature.Controllers {
                 Console.WriteLine(e.Message);
             }
 
-            if (createTopicFlag == 1) Response.StatusCode = 200;
-            else Response.StatusCode = 403; //无法创建
 
             return Json(new { createTopicFlag = createTopicFlag });
         }
@@ -86,6 +95,7 @@ namespace Temperature.Controllers {
         /// <response code="200">成功</response>
         /// <response code="403">无法删除，出现错误/异常</response>
         /// <returns></returns>
+        [SwaggerResponse(200, "文档注释")]
         [HttpPost]
         public ActionResult deleteTopicAnswerByID(string answerID) {
             int deleteTopicAnswerFlag = 0;
@@ -96,11 +106,11 @@ namespace Temperature.Controllers {
                 entity.TopicAnswerReply.Remove(topicAnswerReply); //建立删除语句
                 entity.SaveChanges(); //提交删除
                 deleteTopicAnswerFlag = 1; //成功
-                Response.StatusCode = 200;
+
                 returnJson.Add("deleteTopicAnswerID", topicAnswerReply.TopicAnswerId.ToString());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 deleteTopicAnswerFlag = 0; //失败
-                Response.StatusCode = 403;
+
             } finally {
                 returnJson.Add("deleteTopicAnswerFlag", deleteTopicAnswerFlag.ToString());
 
@@ -124,11 +134,11 @@ namespace Temperature.Controllers {
                 Topic topic = entity.Topic.Single(c => c.TopicId == int.Parse(topicID));
                 entity.Topic.Remove(topic);
                 entity.SaveChanges();
-                Response.StatusCode = 200;
+
                 returnJson.Add("deleteTopic", topic.TopicId.ToString());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 deleteTopicFlag = 0; //失败
-                Response.StatusCode = 403;
+
             } finally {
                 returnJson.Add("deleteTopicAnswerFlag", deleteTopicFlag.ToString());
             }
@@ -148,20 +158,25 @@ namespace Temperature.Controllers {
         /// <response code="200">成功</response>
         /// <response code="403">无法获取，出现错误/异常</response>
         /// <returns></returns>
+        [SwaggerResponse(200, "文档注释", typeof(Topic))]
         [HttpPost]
-        public JsonResult getTopicByPage(int pageNum, int pageSize) {
+        public JsonResult getTopicByPage(int pageNum, int pageSize, string zoneID) {
             int getTopicFlag = 0;
             Dictionary<string, string> returnJson = new Dictionary<string, string>();
             returnJson.Add("Result", "");
 
             try {
-                var content = entity.Topic.Skip((pageNum - 1) * pageSize).Take(pageSize);
+                var content = (from c in entity.Topic
+                               where c.ZoneId == int.Parse(zoneID)
+                               select c).Skip((pageNum - 1) * pageSize).Take(pageSize);
+
                 string contentJson = JsonConvert.SerializeObject(content); //序列化对象
                 returnJson["Result"] = contentJson;
-                Response.StatusCode = 200;
+                getTopicFlag = 1;
+
             } catch(Exception e) {
                 getTopicFlag = 0;
-                Response.StatusCode = 403;
+
             } finally {
                 returnJson.Add("getTopicFlag", getTopicFlag.ToString());
             }
@@ -187,10 +202,10 @@ namespace Temperature.Controllers {
                                select c);
                 string contentJson = JsonConvert.SerializeObject(content);
                 returnJson["Result"] = contentJson;
-                Response.StatusCode = 200;
+
             } catch(Exception e) {
                 getTopicCommentFlag = 0;
-                Response.StatusCode = 403;
+
             } finally {
                 returnJson.Add("getTopicCommentFlag", getTopicCommentFlag.ToString());
             }

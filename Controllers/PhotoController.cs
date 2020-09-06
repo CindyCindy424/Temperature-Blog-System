@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileSystemGlobbing;
@@ -13,6 +14,7 @@ using Temperature.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Temperature.Controllers {
+    [Authorize]
     [Route("[controller]/[action]")]
     [ApiController]
     public class PhotoController : Controller {
@@ -43,11 +45,9 @@ namespace Temperature.Controllers {
                 entity.SaveChanges();
                 entity.Entry(album); //返回插入的记录并注入到album
                 createAlbumFlag = 1;
-                Response.StatusCode = 200;
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
             }
             if(createAlbumFlag == 1) {
                 string newPath = Path.Combine(albumRootPath, userID, album.AlbumId.ToString());
@@ -81,10 +81,8 @@ namespace Temperature.Controllers {
                 entity.AlbumVisit.Add(albumVisit);
                 entity.SaveChanges();
                 createAlbumHistoryFlag = 1;
-                Response.StatusCode = 200;
             } catch(Exception e) {
                 createAlbumHistoryFlag = 0;
-                Response.StatusCode = 403;
             }
 
             return Json(new {createAlbumHistoryFlag = createAlbumHistoryFlag });
@@ -135,11 +133,9 @@ namespace Temperature.Controllers {
                     allFilePath.Add(filePath);
                     allPhotoID.Add(photo.PhotoId.ToString());
 
-                    Response.StatusCode = 200;
                     createPhotoFlag = 1;
                 }
                 catch (Exception e) {
-                    Response.StatusCode = 403;
                     createPhotoFlag = 0;
                     Console.WriteLine(e.Message);
                 }
@@ -179,11 +175,9 @@ namespace Temperature.Controllers {
                 entity.SaveChanges();
                 entity.Entry(photoComment);
 
-                Response.StatusCode = 200;
                 createPhotoCommentFlag = 1;
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 createPhotoCommentFlag = 0;
             }
             var returnJson = new {
@@ -214,11 +208,9 @@ namespace Temperature.Controllers {
                 entity.Album.Remove(album);
                 entity.SaveChanges(); //提交删除
 
-                Response.StatusCode = 200;
                 deleteAlbumFlag = 1;
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 deleteAlbumFlag = 0;
             }
             return Json(new {deleteAlbumFlag = deleteAlbumFlag });
@@ -241,11 +233,9 @@ namespace Temperature.Controllers {
                 entity.AlbumVisit.Remove(albumVisit);
                 entity.SaveChanges();
 
-                Response.StatusCode = 200;
                 deleteAlbumHistoryFlag = 1;
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 deleteAlbumHistoryFlag = 0;
             }
             return Json(new {deleteAlbumHistoryFlag = deleteAlbumHistoryFlag });
@@ -270,11 +260,9 @@ namespace Temperature.Controllers {
 
                 System.IO.File.Delete(filePath); //删除单个文件
 
-                Response.StatusCode = 200;
                 deletePhotoFlag = 1;
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 deletePhotoFlag = 0;
             }
 
@@ -297,11 +285,9 @@ namespace Temperature.Controllers {
                 entity.PhotoComment.Remove(photoComment);
                 entity.SaveChanges();
 
-                Response.StatusCode = 200;
                 deletePhotoCommentFlag = 1;
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 deletePhotoCommentFlag = 0;
             }
             return Json(new { deletePhotoCommentFlag = deletePhotoCommentFlag });
@@ -331,11 +317,9 @@ namespace Temperature.Controllers {
                     visitors.Add(visitedUser);
                 }
 
-                Response.StatusCode = 200;
                 getAlbumHistryFlag = 1;
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 getAlbumHistryFlag = 0;
             }
             var returnJson = new {
@@ -363,11 +347,9 @@ namespace Temperature.Controllers {
                           where c.UserId == int.Parse(userID)
                           select c);
 
-                Response.StatusCode = 200;
                 getAllAlbumFlag = 1;
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 getAllAlbumFlag = 0;
             }
             var returnJson = new {
@@ -402,11 +384,9 @@ namespace Temperature.Controllers {
                 entity.AlbumVisit.Add(albumVisit);
                 entity.SaveChanges(); //更新访问记录
 
-                Response.StatusCode = 200;
                 getAllPhotoFlag = 1;
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 getAllPhotoFlag = 0;
             }
             var returnJson = new {
@@ -432,12 +412,10 @@ namespace Temperature.Controllers {
                                  where c.PhotoId == int.Parse(photoID)
                                  select c);
 
-                Response.StatusCode = 200;
                 getPhotoCommentFlag = 1;
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 getPhotoCommentFlag = 0;
             }
             var returnJson = new {
@@ -471,12 +449,10 @@ namespace Temperature.Controllers {
                     visitors.Add(visitedUser);
                 }
 
-                Response.StatusCode = 200;
                 getPhotoHistryFlag = 1;
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 getPhotoHistryFlag = 0;
             }
             var returnJson = new {
@@ -506,12 +482,10 @@ namespace Temperature.Controllers {
                 entity.Photo.Update(photo);
                 entity.SaveChanges();
 
-                Response.StatusCode = 200;
                 setPhotoLikeFlag = 1;
 
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 403;
                 setPhotoLikeFlag = 0;
             }
             var returnJson = new {

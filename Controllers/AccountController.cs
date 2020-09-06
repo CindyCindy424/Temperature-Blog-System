@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Temperature.Models;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 /** 备注：
  * 这里用户登录只需要输入NickName,然后自动匹配数据库中该用户的id，然后验证密码正确性
@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 
 
 namespace Temperature.Controllers {
+    [Authorize]
     [Route("[controller]/[action]")]
     [ApiController]
     public class AccountController : Controller {
@@ -31,7 +32,32 @@ namespace Temperature.Controllers {
             My_Environment = _environment;
         }
 
+        //生成token
+        [HttpGet]
+        public string getToken(string Username) {
+            //从数据库验证用户名，密码 
+            //验证通过 否则 返回Unauthorized
 
+            //创建claim
+            var authClaims = new[] {
+                new Claim(JwtRegisteredClaimNames.Sub,Username),
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+            };
+            IdentityModelEventSource.ShowPII = true;
+            //签名秘钥 可以放到json文件中
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SecureKeySecureKeySecureKeySecureKeySecureKeySecureKey"));
+
+            var token = new JwtSecurityToken(
+                   issuer: "https://www.cnblogs.com/chengtian",
+                   audience: "https://www.cnblogs.com/chengtian",
+                   expires: DateTime.Now.AddHours(2),
+                   claims: authClaims,
+                   signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                   );
+
+            //返回token和过期时间
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
 
         /// <summary>
         /// 登录
@@ -42,9 +68,11 @@ namespace Temperature.Controllers {
         /// <response code="200">成功</response>
         /// <response code="404">用户名不存在</response>
         /// <response code="403">密码错误</response>
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult Login(string nick_name, string password) {
             User user = new User();
+            string token = "";
             int flag = 0;
             //JsonData jsondata = new JsonData();  //json格式的数据
             var userid =    //EF中的Linq语法
@@ -61,6 +89,8 @@ namespace Temperature.Controllers {
                 else {
                     //jsondata["userID"] = id;
                     flag = 0;//成功
+
+                    token = getToken(nick_name);
                 }
             }
             else {
@@ -68,22 +98,14 @@ namespace Temperature.Controllers {
             }
             var data = new {
                 userid = id,
-                loginFlag = flag
+                loginFlag = flag,
+                token = token
             };
 
             //jsondata["LoginFlag"] = flag.ToString();
             //var data = Json(jsondata.ToJson());
             //return Ok(data);
             //return Ok(Json(jsondata.ToJson()));
-            if (flag == 0) {
-                Response.StatusCode = 200;//成功
-            }
-            else if (flag == 1) {
-                Response.StatusCode = 404;//用户名不存在
-            }
-            else {
-                Response.StatusCode = 403;//密码错误
-            }
             //return Ok(data);
             return Json(data);
 
@@ -135,6 +157,7 @@ namespace Temperature.Controllers {
         /// <returns></returns>
         /// <response code="200">注册成功</response>
         /// <response code="402">用户名被占用</response>
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult register(string nick_name, string password) {
             User user = new User();
@@ -162,14 +185,6 @@ namespace Temperature.Controllers {
             var data = new {
                 RegisterFlag = flag
             };
-            switch (flag) {
-                case 0: //用户名被占用
-                    Response.StatusCode = 402;
-                    break;
-                case 1: //注册成功
-                    Response.StatusCode = 200;
-                    break;
-            }
             return Json(data);
             //return Json(JsonConvert.SerializeObject(jsondata, Formatting.Indented));
 
@@ -191,6 +206,7 @@ namespace Temperature.Controllers {
         /// <returns></returns>
         /// <response code="404">没有找到该用户</response>
         /// <response code ="200">成功修改用户信息</response>
+        [Authorize]
         [HttpPost]
         public JsonResult personalInfo(string nick_name, string gender, string location, string year, string month, string day, string email, string tel, string wechat) {
             //User user = new User();
@@ -232,11 +248,9 @@ namespace Temperature.Controllers {
                 Infoflag = flag
             };
             if (flag == 0) {
-                Response.StatusCode = 404;//没有找到该用户
                 return Json(data);
             }
             else {
-                Response.StatusCode = 200; //成功修改信息
                 return Json(data);
             }
         }
@@ -292,7 +306,6 @@ namespace Temperature.Controllers {
             var id = userid.FirstOrDefault();
             if (id == default) {
                 flag = 0; //没有找到该用户
-                Response.StatusCode = 202;//没有该用户
                 return Json(new { code = 404, UploadFlag = flag });
             }
             var user = entity.User.Find(id); //在数据库中根据key找到相应记录
@@ -318,7 +331,6 @@ namespace Temperature.Controllers {
                 entity.Entry(user).State = EntityState.Modified;
                 entity.SaveChanges();
                 flag = 1;
-                Response.StatusCode = 201;//成功
 
             }
             return Json(new { code = 200, UploadFlag = flag });
@@ -360,12 +372,10 @@ namespace Temperature.Controllers {
             var id = userid.FirstOrDefault();
             if (id == default) {
                 flag = 0; //没有找到该用户
-                Response.StatusCode = 404;//没有该用户
                 return Json(new { code = 202, UploadFlag = flag });
             }
             var user = entity.User.Find(id); //在数据库中根据key找到相应记录
             flag = 1;//找到该用户
-            Response.StatusCode = 200;//成功
             return Json(user);
         }
 
@@ -390,7 +400,6 @@ namespace Temperature.Controllers {
 
             if (id == default) {
                 flag = 0; //没有找到该用户
-                Response.StatusCode = 404;//没有找到该用户
             }
             else {
                 var announcementRecordID =
@@ -410,7 +419,6 @@ namespace Temperature.Controllers {
                     entity.Announcement.Add(announcement2); //把announcement这个实例加入数据库
                     entity.SaveChanges();
 
-                    Response.StatusCode = 200;//成功新建
                 }
                 else {
                     //该用户已经创建过公告，需要rewrite
@@ -423,7 +431,6 @@ namespace Temperature.Controllers {
                     entity.Entry(announcement).State = EntityState.Modified;
                     entity.SaveChanges();
 
-                    Response.StatusCode = 200;//成功重写公告
                 }
 
 
@@ -449,7 +456,6 @@ namespace Temperature.Controllers {
             var id = userid.FirstOrDefault();
             if (id == default) {
                 flag = 0; //没有找到该用户
-                Response.StatusCode = 404;//没有找到该用户
                 return Json(new { DeleteFlag = flag });
             }
             var announcementRecordID =
@@ -459,7 +465,6 @@ namespace Temperature.Controllers {
             var announcement = entity.Announcement.Find(announcementRecordID.FirstOrDefault()); //在数据库中根据key找到相应记录
             if (announcement == null) {
                 flag = 1;//该用户没有创建过公告
-                Response.StatusCode = 403;//该用户没有创建过公告
                 return Json(new { DeleteFlag = flag });
             }
 
@@ -472,7 +477,6 @@ namespace Temperature.Controllers {
             entity.SaveChanges();
 
             flag = 2;
-            Response.StatusCode = 200;//成功删除公告
             return Json(new { DeleteFlag = flag });
         }
 
@@ -494,7 +498,6 @@ namespace Temperature.Controllers {
             var id = userid.FirstOrDefault();
             if (id == default) {
                 flag = 0; //没有找到该用户
-                Response.StatusCode = 404;//没有找到该用户
                 //return Json(new { GetFlag = flag });
                 return null;
             }
@@ -504,13 +507,11 @@ namespace Temperature.Controllers {
                  select c.AnnouncementId).Distinct(); //根据userid找到记录(userid不是主码，不能直接find)
             if (announcementRecordID == null) {
                 flag = 1;//该用户没有创建的公告，无法返回
-                Response.StatusCode = 403;
 
                 return null;
                 //return Json(new { GetFlag = flag });
             }
             var announcement = entity.Announcement.Find(announcementRecordID.FirstOrDefault());
-            Response.StatusCode = 200;//成功返回
             return Json(announcement);
         }
 
@@ -544,14 +545,12 @@ namespace Temperature.Controllers {
                 else
                     flag = 3; //粉丝用户不存在
 
-                Response.StatusCode = 404;//用户不存在
                 return Json(new { GetFlag = flag });
             }
 
             var newFollow = new UserFollow { ActiveUserId = id_2, PassiveUserId = id_1 };
             entity.UserFollow.Add(newFollow);
             entity.SaveChanges();
-            Response.StatusCode = 200;//关注成功
             flag = 4;//成功
             return Json(new { CreateFlag = flag });
         }
@@ -585,14 +584,12 @@ namespace Temperature.Controllers {
                 else
                     flag = 3; //粉丝用户不存在
 
-                Response.StatusCode = 404;//用户不存在
                 return Json(new { GetFlag = flag });
             }
 
             var follow = entity.UserFollow.Find(id_2, id_1);
             entity.Entry(follow).State = EntityState.Deleted;//删除该项
             entity.SaveChanges();
-            Response.StatusCode = 200;//成功
             flag = 4; //成功
             return Json(new { GetFlag = flag });
 
@@ -617,7 +614,6 @@ namespace Temperature.Controllers {
                 (from u in entity.UserFollow
                  where u.PassiveUserId == id
                  select u.ActiveUserId).Distinct();
-            Response.StatusCode = 200;
             return Json(fansID);
         }
 
@@ -639,7 +635,6 @@ namespace Temperature.Controllers {
                 (from u in entity.UserFollow
                  where u.ActiveUserId == id
                  select u.PassiveUserId).Distinct();
-            Response.StatusCode = 200; //成功
             return Json(followID);
         }
 
