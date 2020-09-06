@@ -91,29 +91,28 @@
   #view-topic-page{
     display: flex;
     justify-content: center;
-    padding-top: 80px;
+    padding-top: calc(59px + 20px);
+    padding: calc(59px + 20px) 20px 0px 20px;
     text-align: left;
     background-color: #E5E5E5;
-    min-width: 1200px;
+    min-width: calc(880px + 40px + 360px);
   }
   #left-aside{
     display: flex;
     flex-shrink: 0;
     flex-direction: column;
-    width: 303px;
-    margin-left: 20px;
+    width: 300px;
   }
   #author-info{
     display: flex;
     flex-direction: column;
-    height: 154px;
     background-color: white;
+    padding: 20px;
   }
   #author-info-img-and-text{
     display: flex;
     align-items: center;
     height:max-content;
-    padding: 22px 26px 0px 26px;
   }
   #author-info-img{
     width: 45px;
@@ -124,110 +123,118 @@
   #author-info-text{
     display: flex;
     flex-direction: column;
-    margin-left: 27px;
+    justify-content: space-between;
+    height: 100%;
+    margin-left: 20px;
   }
   #author-info-name{
   }
   #author-info-signature{
-    margin-top: 8px;
     color: #767373;
   }
   #author-info-buttons{
     display: flex;
     justify-content: space-between;
-    margin-top: 36px;
-    padding: 0px 16px;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
+    margin-top: 20px;
+    height: 30px;
     font-size: 14px;
+    line-height: 14px;
+  }
+  #author-info-buttons>div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 76px;
+    border-radius: 4px;
+    cursor: pointer;
   }
   #follow{
-    width: 76px;
     background: #B23535;
-    border-radius: 4px;
     color: white;
-    cursor: pointer;
   }
   #private-letter{
-    width: 76px;
-    border-radius: 4px;
     background: #DAD4D4;
-    cursor: pointer;
   }
   #personel-center{
-    width: 76px;
-    border-radius: 4px;
     background: #DAD4D4;
-    cursor: pointer;
   }
   .left-aside-topic-card{
     display: flex;
     flex-direction: column;
-    margin-top: 33px;
+    margin-top: 20px;
     background: #FFFFFF;
     border-radius: 0px 20px 20px 20px;
+    overflow: hidden;
   }
   .left-aside-subtitle{
-    width: 120px;
-    height: 56px;
+    width: max-content;
+    padding: 20px 30px;
     background: #B23535;
     border-radius: 0px 0px 30px 0px;
     color: white;
-    line-height: 56px;
-    text-align: center;
+    line-height: 18px;
     font-weight: bold;
     font-size: 18px;
   }
   .left-aside-list{
-    padding: 25px 27px;
+    padding: 10px 0px;
   }
   .left-aside-list-item{
+    padding: 10px 20px;
     cursor: pointer;
+    
+    /*实现超过一行的显示省略号*/
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .left-aside-list-item:hover{
+    background-color: rgba(0,0,0,0.15);
   }
   #topic-and-answer{
     display: flex;
     flex-direction: column;
-    width: 1010px;
-    margin-left: 33px;
-    margin-right: 20px;
+    width: 1000px;
+    margin-left: 40px;
   }
   #this-topic{
     background-color: white;
-    padding: 26px 20px 26px 41px;
+    padding: 40px;
   }
   #topic-title{
-    line-height: 32px;
     font-weight: bold;
     font-size: 24px;
+    line-height: 24px;
   }
   #topic-message{
     display: flex;
-    margin-top: 20px;
+    margin-top: 10px;
     color: #6A6969;
     font-size: 13px;
-    line-height: 17px;
+    line-height: 13px;
   }
   #view-count,#topic-tag{
-    margin-left: 59px;
+    margin-left: 60px;
   }
   #topic-content{
-    margin-top: 20px;
+    margin-top: 10px;
   }
   #answer-count{
-    height: 41px;
+    display: flex;
+    align-items: center;
+    height: 40px;
     margin-top: 10px;
-    padding-left: 41px;
+    padding-left: 40px;
     background-color: white;
     font-size: 14px;
-    line-height: 41px;
+    line-height: 14px;
     color: #767373;
   }
   .answer-item{
     display: flex;
     flex-direction: column;
-    margin-top: 4px;
-    padding: 12px 40px 12px 41px;
+    margin-top: 10px;
+    padding: 40px;
     background-color: white;
   }
   .answer-author{
@@ -241,24 +248,24 @@
     border-radius: 40px;
   }
   .answer-author-name{
-    margin-left: 25px;
+    margin-left: 20px;
     font-size: 18px;
-    line-height: 24px;
+    line-height: 18px;
   }
   .answer-content{
-    margin-top: 14px;
+    margin-top: 20px;
   }
   .answer-message-time{
-    margin-top: 14px;
+    margin-top: 20px;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 14px;
     color: #958F8F;
   }
   .answer-statistic{
     display: flex;
-    margin-top: 14px ;
+    margin-top: 20px ;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 14px;
   }
   .answer-statistic-comment{
     cursor: pointer;
@@ -266,14 +273,15 @@
   .answer-comments{
     display: flex;
     flex-direction: column;
-    margin-top: 14px;
+    margin-top: 20px;
     box-shadow: inset 0px 0px 0px 1px #DAD4D4;
-    padding: 12px 33px;
+    padding: 20px;
   }
   .leave-comment{
     display: flex;
   }
   .leave-comment-input{
+    flex-grow: 1;
     height: 28px;
     border-width: 0px;
     background-color: #F3F1F1;
@@ -281,17 +289,19 @@
     line-height: 28px;
   }
   .leave-comment-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 28px;
-    width: 57px;
+    padding: 0px 20px;
     background: #B23535;
     color: white;
-    line-height: 28px;
-    text-align: center;
+    line-height: 16px;
     cursor: pointer;
   }
   .comment-item{
     display: flex;
-    padding: 18px 0px;
+    padding: 20px 0px;
     border-bottom-width: 1px ;
     border-bottom-style: solid;
     border-bottom-color: #969292;
@@ -305,12 +315,12 @@
   }
   .comment-author-name{
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 20px;
     line-height: 30px;
     font-size: 14px;
   }
   .comment-content{
-    margin-top: 6px;
+    margin: 6px 0px 0px 10px;
     font-size: 14px;
     color: #767373;
     line-height: 18px;

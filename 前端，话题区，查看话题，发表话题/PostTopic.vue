@@ -38,43 +38,45 @@
   	padding: 0px;
   }
   #post-topic-page{
+    --page-content-width: calc(880px + 40px + 360px);
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #E5E5E5;
-    min-width: 1400px;
+    min-width: var(--page-content-width);
     text-align: left;
   }
   #photo-div{
     display: flex;
+    align-self: center;
     justify-content: center;
+    align-items: center;
 
   	height: 352px;
   	width: 100%;
-    align-self: center;
     overflow: hidden;
   }
   #photo-div>img{
-    width: 1347px;
-    height: 100%;
+    width: var(--page-content-width);
   }
   #my-question{
-    width: calc(1347px - 32px);
-    height: 108px;
-    margin-top: 23px;
-    padding-left: 32px;
+    width: calc(var(--page-content-width) - 40px);
+    height: 100px;
+    margin: 20px 20px 0px 20px;
+    padding-left: 40px;
     background-color: #F9F8F8;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     font-weight: bold;
     font-size: 24px;
-    line-height: 108px;
+    line-height: 100px;
     color: #756F6F;
   }
   #panel{
-    padding: 60px;
+    margin: 0px 20px;
+    padding: 40px;
     margin-bottom: 20px;
-    width: calc(1347px - 2 * 60px);
+    width: calc(var(--page-content-width) - 2 * 40px);
     background-color: white;
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);;
   }
@@ -91,27 +93,27 @@
     margin-top: 20px;
   }
   #post{
-    width: 159px;
-    height: 42px;
+    width: 140px;
+    height: 40px;
 
     background: #DA4646;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
     font-size: 18px;
-    line-height: 42px;
+    line-height: 40px;
     text-align: center;
     color: #F9F5F5;
   }
   #cancle{
-    width: 159px;
-    height: 42px;
-    margin-left: 60px;
+    width: 140px;
+    height: 40px;
+    margin-left: 40px;
 
     background: #EFE7E7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
     font-size: 18px;
-    line-height: 42px;
+    line-height: 40px;
     text-align: center;
     color: #504C4C;
   }
