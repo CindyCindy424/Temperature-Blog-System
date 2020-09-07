@@ -2,3 +2,8 @@
 group assignment for DBPrinciple   SSE Tongji
 
  `数据库项目考核注意点` 根据袁阿姨上课提到的考核要点总结而来，项目开发时需要注意文件内提及的内容
+
+
+## log
+后端整体项目 上传到单独的github仓库便于操作
+后端项目地址：https://github.com/CindyCindy424/blog-Backend
