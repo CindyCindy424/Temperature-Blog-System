@@ -11,20 +11,20 @@
         		<div id="topics-search-button"></div>
         	</div>
         	<div id="latest-topics-list">
-        		<div class="l-t-item" v-for="item in LTopics" :key="item.TopicId">
-        			<router-link :to="{path:'/ViewTopic', query:{id:item.TopicId}}" class="l-t-i-title">{{item.TopicTitle}}</router-link>
-        			<router-link to="/ViewTopic" class="l-t-i-content">{{item.TopicContent}}</router-link>
+        		<div class="l-t-item" v-for="item in currentPageLTopics" :key="item.TopicId">
+        			<router-link :to="{path:'/ViewTopic', query:{thisTopic:item}}" class="l-t-i-title">{{item.TopicTitle}}</router-link>
+        			<router-link :to="{path:'/ViewTopic', query:{thisTopic:item}}" class="l-t-i-content">{{item.TopicContent}}hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</router-link>
         			<span class="l-t-i-time">{{item.TopicUploadTime}}</span>
         			<span class="l-t-i-answerCount">回答：{{item.AnswerNum}}</span>
         			<span class="l-t-i-delete">删除</span>
         		</div>
         	</div>
         	<div id="latest-topics-page-controller">
-        		<div id="l-t-last-page">上一页</div>
-            <div class="l-t-page-num" v-for="item in pageNums">
+        		<div id="l-t-last-page" v-on:click="LTLastPage">上一页</div>
+            <div :class="{'l-t-page-num':true,'l-t-page-num-selected':item.page==currentPage}" v-for="item in pageNums">
               {{item.page}}
             </div>
-        		<div id="l-t-next-page">下一页</div>
+        		<div id="l-t-next-page" v-on:click="LTNextPage">下一页</div>
         	</div>
         </div>
         <div id="right-aside">
@@ -46,7 +46,7 @@
             	<div id="hottest-topics-title">最热话题</div>
             	<div id="hottest-topics-list">
             		<div class="right-aside-list-item" v-for="item in HTopics">
-                  {{item.title}}
+                  {{item.TopicTitle}}
                 </div>
             	</div>
             </div>
@@ -60,39 +60,122 @@
     name: 'TopicArea',
 		data(){
 			return{
-				LTopics: [],
+        zoneID: 1,
+        LTopicSum: 0,
+        LTopicPageSum: 1,
+        LTopicCountPerPage: 2,
+				pageNums:[],
+
+				currentPage: 1,
+				currentPageLTopics: [],
+
+        MTNum: 8,
         MTopics:[],
+        HTNum: 8,
         HTopics:[],
-				pageNums:[
-					{page: 1},
-					{page: 2},
-					{page: 3}
-				],
-				selectedPage: 1,
 				myTopicsNum: 40,
 				myTopicsAnsNum: 0,
-        ajax: 0,
+        ajax_getLatestTopics: 0,
+        ajax_getLTopicSum: 0,
+        ajax_getHottestTopics: 0,
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6IjkyYTM3MzFjLTgxODYtNGU0OS04Njk3LWI1ZGYxYzk5OWYyYSIsImV4cCI6MTU5OTY2MDU5MCwiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.S7ZFOdZ0smsaUJnDujswFITJWxssP2pGKZLPKIl14N8",
 			}
 		},
     created:function(){
-      this.getLatestTopics();
+      this.setCookie();
+      this.getTokenFromCookie();
+      this.getLatestTopicsPageMessage();
+      this.getLatestTopicsList();
+      this.getHottestTopics();
     },
     methods:{
-      getLatestTopics(){
-        var pageNum = 1;
-        var pageSize = 10;
-        this.ajax = new XMLHttpRequest();
-        this.ajax.open("POST", "http://139.224.255.43:7779/Topic/getTopicByPage?pageNum="+pageNum+"&pageSize="+pageSize, true);
-        this.ajax.onreadystatechange = this.getLT;
-        this.ajax.send();
+      setCookie(){
+        document.cookie="token="+this.token+";expires=Sun, 31 Dec 2090 12:00:00 UTC";
+      },
+      getTokenFromCookie(){
+        //console.log(document.cookie);
+        var cookie=document.cookie;
+        var cookieArr=cookie.split(";");
+        for(var i=0;i<cookieArr.length;i++){
+          var keyAndValue=cookieArr[i].split("=");
+          if(keyAndValue[0].trim()=="token"){
+            return keyAndValue[1];
+          }
+        }
+      },
+      getLatestTopicsList(){
+        var pageNum = this.currentPage;
+        var pageSize = this.LTopicCountPerPage;
+        var zoneID = this.zoneID;
+        this.ajax_getLatestTopics = new XMLHttpRequest();
+        this.ajax_getLatestTopics.open("POST", "http://139.224.255.43:7779/Topic/getTopicByPage?pageNum="+pageNum+"&pageSize="+pageSize+"&zoneID="+zoneID, true);
+        this.ajax_getLatestTopics.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getLatestTopics.onreadystatechange = this.getLT;
+        this.ajax_getLatestTopics.send();
       },
       getLT(){
-        if (this.ajax.readyState == 4 && this.ajax.status == 200) {
-          var receive = JSON.parse(JSON.parse(this.ajax.responseText).Result);
-          this.LTopics = receive;
-          for(var i = 0; i < this.LTopics.length; i++){
-            this.LTopics[i].TopicUploadTime=this.LTopics[i].TopicUploadTime.replace("T","  ");
+        if (this.ajax_getLatestTopics.readyState == 4 && this.ajax_getLatestTopics.status == 200) {
+          var receive = JSON.parse(JSON.parse(this.ajax_getLatestTopics.responseText).Result);
+          this.currentPageLTopics = receive;
+          //console.log(receive);
+          for(var i = 0; i < this.currentPageLTopics.length; i++){
+            this.currentPageLTopics[i].TopicUploadTime=this.currentPageLTopics[i].TopicUploadTime.replace("T","  ");
           }
+        }
+      },
+      getLatestTopicsPageMessage(){
+        var pageNum = this.currentPage;
+        var pageSize = this.LTopicCountPerPage;
+        var zoneID = this.zoneID;
+        this.ajax_getLTopicSum = new XMLHttpRequest();
+        this.ajax_getLTopicSum.open("POST", "http://139.224.255.43:7779/Topic/getTopicNumberByZoneID?zoneID="+zoneID, true);
+        this.ajax_getLTopicSum.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getLTopicSum.onreadystatechange = this.getLTS;
+        this.ajax_getLTopicSum.send();
+      },
+      getLTS(){
+        if (this.ajax_getLTopicSum.readyState == 4 && this.ajax_getLTopicSum.status == 200) {
+          var receive = JSON.parse(this.ajax_getLTopicSum.responseText);
+          var getTopicNumberFlag=receive.getTopicNumberFlag;
+          this.LTopicSum=receive.totalNumber;
+          this.LTopicPageSum=Math.ceil((this.LTopicSum)*1.0/this.LTopicCountPerPage);
+          this.pageNums=[];                               //加载页控制按钮
+          for(var i=1;i<=this.LTopicPageSum;i++){
+            this.pageNums.push({page:i});
+          }
+        }
+      },
+      LTNextPage(){
+        if(this.currentPage==this.LTopicPageSum){
+          alert("没有下一页。");
+        }
+        else{
+          this.currentPage++;
+          this.getLatestTopicsList();
+        }
+      },
+      LTLastPage(){
+        if(this.currentPage==1){
+          alert("没有上一页。");
+        }
+        else{
+          this.currentPage--;
+          this.getLatestTopicsList();
+        }
+      },
+      getHottestTopics(){
+        var takeTopicNum = this.HTNum;
+        this.ajax_getHottestTopics = new XMLHttpRequest();
+        this.ajax_getHottestTopics.open("POST", "http://139.224.255.43:7779/Topic/getHotestTopic?takeTopicNum="+takeTopicNum, true);
+        this.ajax_getHottestTopics.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getHottestTopics.onreadystatechange = this.getHT;
+        this.ajax_getHottestTopics.send();
+      },
+      getHT(){
+        if (this.ajax_getHottestTopics.readyState == 4 && this.ajax_getHottestTopics.status == 200) {
+          var receive = JSON.parse(JSON.parse(this.ajax_getHottestTopics.responseText).topics);
+          //console.log(receive);
+          this.HTopics=receive;
         }
       }
     }
@@ -178,7 +261,6 @@
 
   	background: #FFFFFF;
   	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-  	cursor: pointer;
   }
   .l-t-i-title{
   	display: block;
@@ -187,6 +269,7 @@
   	line-height: 24px;
   	color: #000000;
     text-decoration: none;
+    cursor: pointer;
 
     /*实现超过一行的显示省略号*/
     white-space: nowrap;
@@ -194,7 +277,7 @@
     overflow: hidden;
   }
   .l-t-i-content{
-  	margin-top: 10px;
+  	padding-top: 10px;
     margin-bottom: 10px;
   	height: 50px;
     text-decoration: none;
@@ -202,6 +285,7 @@
   	font-size: 18px;
   	line-height: 25px;
   	color: #727272;
+    cursor: pointer;
 
     /*实现显示两行文字后显示省略号*/
   	display: -webkit-box;
@@ -209,6 +293,7 @@
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     overflow: hidden;
+    word-break: break-word;
   }
   .l-t-i-time{
   	display: inline-block;
@@ -238,6 +323,7 @@
   	text-decoration-line: underline;
 
   	color: #999494;
+    cursor: pointer;
   }
   #latest-topics-page-controller{
     display: flex;

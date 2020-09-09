@@ -103,6 +103,7 @@
     line-height: 40px;
     text-align: center;
     color: #F9F5F5;
+    cursor: pointer;
   }
   #cancle{
     width: 140px;
@@ -116,6 +117,7 @@
     line-height: 40px;
     text-align: center;
     color: #504C4C;
+    cursor: pointer;
   }
 
 </style>

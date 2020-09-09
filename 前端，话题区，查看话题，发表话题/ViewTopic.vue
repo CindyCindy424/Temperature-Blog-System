@@ -18,47 +18,51 @@
       <div id="latest-topic" class="left-aside-topic-card">
         <div class="left-aside-subtitle">最新话题</div>
         <div class="left-aside-list">
-          <div class="left-aside-list-item">如何制作博客网站</div>
+          <div class="left-aside-list-item" v-for="item in LTopics">
+            {{item.TopicTitle}}
+          </div>
         </div>
       </div>
       <div id="hotest-topic" class="left-aside-topic-card">
         <div class="left-aside-subtitle">最热话题</div>
         <div class="left-aside-list">
-          <div class="left-aside-list-item">如何制作博客网站</div>
+          <div class="left-aside-list-item" v-for="item in HTopics">
+            {{item.TopicTitle}}
+          </div>
         </div>
       </div>
     </div>
     <div id="topic-and-answer">
       <div id="this-topic">
-        <div id="topic-title">如何快速写出一个博客网站？</div>
+        <div id="topic-title">{{thisTopic.TopicTitle}}</div>
         <div id="topic-message">
-          <div id="date-and-time">2020-8-9 21:55</div>
-          <div id="view-count">233</div>
+          <div id="date-and-time">{{thisTopic.TopicUploadTime}}</div>
+          <div id="view-count">浏览次数：233</div>
           <div id="topic-tag">tag:开发</div>
         </div>
-        <div id="topic-content">如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出一个博客网站？如何快速写出</div>
+        <div id="topic-content">{{thisTopic.TopicContent}}</div>
       </div>
-      <div id="answer-count">3个回答</div>
-      <div class="answer-item">
+      <div id="answer-count">{{Answers.length}} 个回答</div>
+      <div class="answer-item" v-for="item in Answers">
         <div class="answer-author">
           <img class="answer-author-avatar" />
-          <div class="answer-author-name">喵喵酱</div>
+          <div class="answer-author-name">UserId={{item.topicInfo.UserID}}</div>
         </div>
-        <div class="answer-content">我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！我知道！</div>
-        <div class="answer-message-time">发布于 2020-8-9 21:55</div>
+        <div class="answer-content">{{item.topicInfo.Content}}</div>
+        <div class="answer-message-time">发布于 {{item.topicInfo.UploadTime}}</div>
         <div class="answer-statistic">
-          <div class="answer-statistic-comment">评论 3 |</div>
-          <div class="answer-statistic-likeit">&nbsp;点赞 20</div>
+          <div class="answer-statistic-comment">评论 {{item.userComments.length}} |</div>
+          <div class="answer-statistic-likeit">&nbsp;点赞 {{item.topicInfo.AnswerLikes}}</div>
         </div>
         <div class="answer-comments">
           <div class="leave-comment">
             <input class="leave-comment-input" type="text" placeholder="    发表评论" />
             <div class="leave-comment-button">发表</div>
           </div>
-          <div class="comment-item">
-            <img class="comment-author-avatar"></img>
-            <div class="comment-author-name">汪汪酱：</div>
-            <div class="comment-content">就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？就这？</div>
+          <div class="comment-item" v-for="com in item.userComments">
+            <img class="comment-author-avatar" :src="com.avatr"></img>
+            <div class="comment-author-name">{{com.userInfo.nickName}}：</div>
+            <div class="comment-content">{{com.userComment.Content}}</div>
           </div>
         </div>
       </div>
@@ -81,16 +85,125 @@
     },
     data(){
       return {
-        TopicId: 0,
+        thisTopic: 0,
+        Answers: [],
+
+        LTNum: 8,
+        LTopics:[],
+        HTNum: 8,
+        HTopics:[],
+        answerUserList:[],
+
+        ajax_getLatestTopics: 0,
+        ajax_getHottestTopics: 0,
+        ajax_getAnswers: 0,
+        ajax_getTopicDetailByID: 0
       };
     },
     created:function(){
-      this.getTopicId();
+      this.getThisTopic();
+      //this.getAnswers();
+      this.getTopicDetailByID();
+      this.getHottestTopics();
+      this.getLatestTopics();
     },
     methods:{
-      getTopicId(){
-        this.TopicId = this.$route.query.id;
-        console.log(this.TopicId);
+      getTokenFromCookie(){
+        //console.log(document.cookie);
+        var cookie=document.cookie;
+        var cookieArr=cookie.split(";");
+        for(var i=0;i<cookieArr.length;i++){
+          var keyAndValue=cookieArr[i].split("=");
+          if(keyAndValue[0].trim()=="token"){
+            //console.log(keyAndValue[1]);
+            return keyAndValue[1];
+          }
+        }
+      },
+      getThisTopic(){
+        this.thisTopic = this.$route.query.thisTopic;
+        //console.log(this.thisTopic);
+      },
+      getAnswers(){
+        var topicID = this.thisTopic.TopicId;
+        this.ajax_getAnswers = new XMLHttpRequest();
+        this.ajax_getAnswers.open("POST", "http://139.224.255.43:7779/Topic/getTopicCommentByID?topicID="+topicID, true);
+        this.ajax_getAnswers.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getAnswers.onreadystatechange = this.getAns;
+        this.ajax_getAnswers.send();
+      },
+      getAns(){
+        if (this.ajax_getAnswers.readyState == 4 && this.ajax_getAnswers.status == 200) {
+          //console.log(this.ajax_getAnswers.responseText);
+          var receive = JSON.parse(JSON.parse(this.ajax_getAnswers.responseText).Result);
+          this.Answers = receive;
+          for(var i = 0; i < this.Answers.length; i++){
+            this.Answers[i].AnswerUploadTime=this.Answers[i].AnswerUploadTime.replace("T","  ");
+          }
+        }
+      },
+      getLatestTopics(){
+        var takeTopicNum = this.LTNum;
+        this.ajax_getLatestTopics = new XMLHttpRequest();
+        this.ajax_getLatestTopics.open("POST", "http://139.224.255.43:7779/Topic/getNewestTopic?takeTopicNum="+takeTopicNum, true);
+        this.ajax_getLatestTopics.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getLatestTopics.onreadystatechange = this.getLT;
+        this.ajax_getLatestTopics.send();
+      },
+      getLT(){
+        if (this.ajax_getLatestTopics.readyState == 4 && this.ajax_getLatestTopics.status == 200) {
+          var receive = JSON.parse(JSON.parse(this.ajax_getLatestTopics.responseText).topics);
+          console.log(receive);
+          this.LTopics=receive;
+        }
+      },
+      getHottestTopics(){
+        var takeTopicNum = this.HTNum;
+        this.ajax_getHottestTopics = new XMLHttpRequest();
+        this.ajax_getHottestTopics.open("POST", "http://139.224.255.43:7779/Topic/getHotestTopic?takeTopicNum="+takeTopicNum, true);
+        this.ajax_getHottestTopics.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getHottestTopics.onreadystatechange = this.getHT;
+        this.ajax_getHottestTopics.send();
+      },
+      getHT(){
+        if (this.ajax_getHottestTopics.readyState == 4 && this.ajax_getHottestTopics.status == 200) {
+          var receive = JSON.parse(JSON.parse(this.ajax_getHottestTopics.responseText).topics);
+          //console.log(receive);
+          this.HTopics=receive;
+        }
+      },
+      getTopicDetailByID(){
+        var topicID = this.thisTopic.TopicId;
+        this.ajax_getTopicDetailByID = new XMLHttpRequest();
+        this.ajax_getTopicDetailByID.open("POST", "http://139.224.255.43:7779/Topic/getTopicDetailByID?topicID="+topicID, true);
+        this.ajax_getTopicDetailByID.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getTopicDetailByID.onreadystatechange = this.getTD;
+        this.ajax_getTopicDetailByID.send();
+      },
+      getTD(){
+        if (this.ajax_getTopicDetailByID.readyState == 4 && this.ajax_getTopicDetailByID.status == 200) {
+          var receive = JSON.parse(this.ajax_getTopicDetailByID.responseText).answerUserList;
+          this.answerUserList=receive;
+          //console.log(receive);
+          //this.HTopics=receive;
+          this.sortOutAnswerList();
+        }
+      },
+      sortOutAnswerList(){
+        var answerList=this.answerUserList;
+        //console.log(answerList);
+        for(var i=0;i<answerList.length;i++){
+          answerList[i]=JSON.parse(answerList[i]);                      //将每个回答变成对象
+          answerList[i].topicInfo=JSON.parse(answerList[i].topicInfo);  //将话题信息变成对象
+          answerList[i].topicInfo.UploadTime=answerList[i].topicInfo.UploadTime.replace("T","  ");//去掉时间中的"T"
+          for(var j=0;j<answerList[i].userComments.length;j++){         //将评论变成对象
+            answerList[i].userComments[j]=JSON.parse(answerList[i].userComments[j]);
+            answerList[i].userComments[j].userComment=JSON.parse(answerList[i].userComments[j].userComment);
+            answerList[i].userComments[j].userInfo=JSON.parse(answerList[i].userComments[j].userInfo);
+          }
+        }
+        //console.log(answerList);
+        this.Answers=answerList;
       }
     }
   }
@@ -218,6 +331,8 @@
     font-weight: bold;
     font-size: 24px;
     line-height: 24px;
+    overflow: hidden;
+    word-wrap: break-word;
   }
   #topic-message{
     display: flex;
@@ -231,6 +346,8 @@
   }
   #topic-content{
     margin-top: 10px;
+    overflow: hidden;
+    word-wrap: break-word;
   }
   #answer-count{
     display: flex;
@@ -267,6 +384,8 @@
   }
   .answer-content{
     margin-top: 20px;
+    overflow: hidden;
+    word-wrap: break-word;
   }
   .answer-message-time{
     margin-top: 20px;
@@ -337,6 +456,8 @@
     font-size: 14px;
     color: #767373;
     line-height: 18px;
+    overflow: hidden;
+    word-wrap: break-word;
   }
   #editor{
     margin: 20px 0px;
