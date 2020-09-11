@@ -12,17 +12,15 @@
         <div class="subtitle">问题详情</div>
         <textarea id="contentInput" v-model="content"/>
       </div>
-      <div id="add-tag">
-        <div class="subtitle">分区：</div>
-        <select id="zone-select" v-model="zoneID">
-          <option value="1">1区</option>
-          <option value="1">2区</option>
-          <option value="1">3区</option>
-          <option value="1">4区</option>
-          <option value="1">5区</option>
-          <option value="1">6区</option>
-        </select>
-      </div>
+      <div class="subtitle">分区：</div>
+      <select id="zone-select" v-model="zoneID">
+        <option value="1">1区</option>
+        <option value="1">2区</option>
+        <option value="1">3区</option>
+        <option value="1">4区</option>
+        <option value="1">5区</option>
+        <option value="1">6区</option>
+      </select>
       <div id="buttons">
         <div id="post" v-on:click="post">发表</div>
         <div id="cancle" v-on:click="cancle">取消</div>
@@ -168,7 +166,9 @@
     display: flex;
   }
   #zone-select{
-
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: "microsoft yahei";
   }
   #buttons{
     display: flex;

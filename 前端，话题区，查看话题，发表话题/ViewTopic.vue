@@ -3,10 +3,10 @@
     <div id="left-aside">
       <div id="author-info">
         <div id="author-info-img-and-text">
-          <img id="author-info-img" :src="loc+thisTopicUser.avatr" />
+          <img id="author-info-img" :src="thisTopicUser.avatr==undefined?'':loc+thisTopicUser.avatr" />
           <div id="author-info-text">
             <div id="author-info-name">{{thisTopicUser.nickName}}</div>
-            <div id="author-info-signature">{{thisTopicUser.annoucement}}</div>
+            <div id="author-info-signature">{{thisTopicUser.userAnnouncement}}</div>
           </div>
         </div>
         <div id="author-info-buttons">
@@ -17,7 +17,7 @@
       <div id="latest-topic" class="left-aside-topic-card">
         <div class="left-aside-subtitle">最新话题</div>
         <div class="left-aside-list">
-          <router-link v-for="item in LTopics" :to="{path:'/ViewTopic', query:{topicID:item.TopicId}}" class="left-aside-list-item">
+          <router-link v-for="item in LTopics" :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="left-aside-list-item">
             {{item.TopicTitle}}
           </router-link>
         </div>
@@ -25,7 +25,7 @@
       <div id="hotest-topic" class="left-aside-topic-card">
         <div class="left-aside-subtitle">最热话题</div>
         <div class="left-aside-list">
-          <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId}}" class="left-aside-list-item" v-for="item in HTopics">
+          <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="left-aside-list-item" v-for="item in HTopics">
             {{item.TopicTitle}}
           </router-link>
         </div>
@@ -43,29 +43,31 @@
       <div id="answer-count">{{Answers.length}} 个回答</div>
       <div class="answer-item" v-for="item in Answers">
         <div class="answer-author">
-          <img class="answer-author-avatar" :src="loc+item.topicInfo.avatr"/>
-          <div class="answer-author-name">UserId={{item.topicInfo.UserID}}</div>
+          <img class="answer-author-avatar" :src="loc+item.firstLevelComment.UserAvatr"/>
+          <div class="answer-author-name">{{item.firstLevelComment.UserNickName}}</div>
         </div>
-        <div class="answer-content">{{item.topicInfo.Content}}</div>
-        <div class="answer-message-time">发布于 {{item.topicInfo.UploadTime}}</div>
+        <div class="answer-content">{{item.firstLevelComment.Content}}</div>
+        <div class="answer-message-time">发布于 {{item.firstLevelComment.UploadTime}}</div>
         <div class="answer-statistic">
           <div class="answer-statistic-comment">评论 {{item.userComments.length}} |</div>
-          <div class="answer-statistic-likeit">&nbsp;点赞 {{item.topicInfo.AnswerLikes}}</div>
+          <div class="answer-statistic-likeit">&nbsp;点赞 {{item.firstLevelComment.AnswerLikes}}</div>
         </div>
         <div class="answer-comments">
-          <div class="leave-comment">
-            <input class="leave-comment-input" type="text" placeholder="    发表评论" />
-            <div class="leave-comment-button">发表</div>
-          </div>
           <div class="comment-item" v-for="com in item.userComments">
-            <img class="comment-author-avatar" :src="loc+com.userInfo.avatr"></img>
-            <div class="comment-author-name">{{com.userInfo.nickName}}：</div>
-            <div class="comment-content">{{com.userComment.Content}}</div>
+            <img class="comment-author-avatar" :src="loc+com.UserAvatr"></img>
+            <div class="comment-author-name">{{com.UserNickName}}</div>
+            <div class="comment-content">{{com.Content}}</div>
+          </div>
+          <div class="leave-comment">
+            <input class="leave-comment-input" type="text" placeholder="发表评论" />
+            <div class="leave-comment-button" v-on:click="commentAnswer(item.firstLevelComment.TopicAnswerID,$event)">发表</div>
           </div>
         </div>
       </div>
-      <div id="editor">
-        <quill-editor ref="text" class="myQuillEditor" />
+      <div id="my-answer-card">
+        <div id="my-answer-card-subtitle">我来回答</div>
+        <textarea id="my-answer-content" v-model="myAnswerContent"></textarea>
+        <div id="upload-answer" v-on:click="answerTopic">上传回答</div>
       </div>
     </div>
   </div>
@@ -92,6 +94,8 @@
         HTNum: 8,
         HTopics:[],
         answerUserList:[],
+
+        myAnswerContent: "",
 
         ajax_getLatestTopics: 0,
         ajax_getHottestTopics: 0,
@@ -178,7 +182,7 @@
         if (this.ajax_getTopicDetailByID.readyState == 4 && this.ajax_getTopicDetailByID.status == 200) {
           var receive = JSON.parse(this.ajax_getTopicDetailByID.responseText).answerUserList;
           this.answerUserList=receive;
-          console.log(receive);
+          //console.log(JSON.parse(this.ajax_getTopicDetailByID.responseText));
           this.sortOutAnswerList();
         }
       },
@@ -188,12 +192,12 @@
         for(var i=0;i<answerList.length;i++){
           answerList[i]=JSON.parse(answerList[i]);                      //将每个回答变成对象
           //console.log(answerList[i]);
-          answerList[i].topicInfo=JSON.parse(answerList[i].topicInfo);  //将话题信息变成对象
-          answerList[i].topicInfo.UploadTime=answerList[i].topicInfo.UploadTime.replace("T","  ");//去掉时间中的"T"
+          answerList[i].firstLevelComment=JSON.parse(answerList[i].firstLevelComment);  //将话题信息变成对象
+          answerList[i].firstLevelComment.UploadTime=answerList[i].firstLevelComment.UploadTime.replace("T","  ");//去掉时间中的"T"
           for(var j=0;j<answerList[i].userComments.length;j++){         //将评论变成对象
             answerList[i].userComments[j]=JSON.parse(answerList[i].userComments[j]);
-            answerList[i].userComments[j].userComment=JSON.parse(answerList[i].userComments[j].userComment);
-            answerList[i].userComments[j].userInfo=JSON.parse(answerList[i].userComments[j].userInfo);
+            //answerList[i].userComments[j].userComment=JSON.parse(answerList[i].userComments[j].userComment);
+            //answerList[i].userComments[j].userInfo=JSON.parse(answerList[i].userComments[j].userInfo);
           }
         }
         //console.log(answerList);
@@ -211,8 +215,9 @@
       getUIBID(){                         //用户信息附属函数
         if (this.ajax_getUserInfoByID.readyState == 4 && this.ajax_getUserInfoByID.status == 200) {
           var receive = JSON.parse(this.ajax_getUserInfoByID.responseText);
+          receive.userInfo.userAnnouncement=receive.userAnnouncement;
           this.thisTopicUser=receive.userInfo;
-          //console.log(receive);
+          //console.log(receive.userAnnouncement);
         }
       },
       getSingleTopicDetail(){             //获取话题信息
@@ -238,11 +243,11 @@
         }
       },
       follow(){                           //关注功能
-        alert("功能未开发");
-        var nameOfBlogger = "no"
-        var nameOfFans = "no";
+        var idOfBlogger = this.thisTopicUser.userId;
+        var idOfFans = this.myID;
+        //console.log(this.thisTopicUser);
         this.ajax_follow = new XMLHttpRequest();
-        this.ajax_follow.open("POST", "http://139.224.255.43:7779/Account/createFollowByNickNames?nameOfBlogger="+nameOfBlogger+"&nameOfFans="+nameOfFans, true);
+        this.ajax_follow.open("POST", "http://139.224.255.43:7779/Account/createFollowByID?idOfBlogger="+idOfBlogger+"&idOfFans="+idOfFans, true);
         this.ajax_follow.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
         this.ajax_follow.onreadystatechange = this.fw;
         this.ajax_follow.send();
@@ -250,7 +255,57 @@
       fw(){                               //关注功能附属函数
         if (this.ajax_follow.readyState == 4 && this.ajax_follow.status == 200) {
           var receive = JSON.parse(this.ajax_follow.responseText);
+          console.log(receive);
+        }
+      },
+      answerTopic(){
+        var content=this.myAnswerContent;
+        var topicID=this.thisTopic;
+        var userID=this.myID;
+        var parentID= "-1";console.log(content,topicID,userID,parentID)
+        this.ajax_answerTopic = new XMLHttpRequest();
+        this.ajax_answerTopic.open("POST", "http://139.224.255.43:7779/Topic/createTopicAnswerByID?content="+content+"&topicID="+topicID+"&userID="+userID+"&parentID="+parentID, true);
+        this.ajax_answerTopic.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_answerTopic.onreadystatechange = this.AT;
+        this.ajax_answerTopic.send();
+      },
+      AT(){
+        if (this.ajax_answerTopic.readyState == 4 && this.ajax_answerTopic.status == 200) {
+          var receive = JSON.parse(this.ajax_answerTopic.responseText);
+          if(receive.cerateTopicAnswerFlag ==1){
+            alert("上传回答成功！");
+            this.myAnswerContent="";
+            this.getTopicDetailByID();
+          }
+          else{
+            alert("上传回答失败");
+          }
           //console.log(receive);
+        }
+      },
+      commentAnswer(topicAnswerID,e){
+        var content=this.myAnswerContent;
+        var topicID=this.thisTopic;
+        var userID=this.myID;
+        var parentID= topicAnswerID;
+        console.log(e);
+        this.ajax_commentAnswer = new XMLHttpRequest();
+        this.ajax_commentAnswer.open("POST", "http://139.224.255.43:7779/Topic/createTopicAnswerByID?content="+content+"&topicID="+topicID+"&userID="+userID+"&parentID="+parentID, true);
+        this.ajax_commentAnswer.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_commentAnswer.onreadystatechange = this.CA;
+        //this.ajax_commentAnswer.send();
+      },
+      CA(){
+        if (this.ajax_commentAnswer.readyState == 4 && this.ajax_commentAnswer.status == 200) {
+          var receive = JSON.parse(this.ajax_commentAnswer.responseText);
+          if(receive.cerateTopicAnswerFlag ==1){
+            alert("评论成功！");
+            this.getTopicDetailByID();
+          }
+          else{
+            alert("评论失败");
+          }
+          console.log(receive);
         }
       }
     }
@@ -509,12 +564,33 @@
     overflow: hidden;
     word-wrap: break-word;
   }
-  #editor{
-    margin: 20px 0px;
+  #my-answer-card{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    padding: 40px;
     background-color: white;
   }
-  .ql-editor{
-       height:300px;
-   }
+  #my-answer-card-subtitle{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  #my-answer-content{
+    width: calc(100% - 40px);
+    padding: 20px;
+    height: 300px;
+    font-size: 16px;
+    font-family: "microsoft yahei";
+  }
+  #upload-answer{
+    margin-top: 20px;
+    padding: 10px 20px;
+    align-self: flex-end;
+    background-color: #B23535;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 
 </style>

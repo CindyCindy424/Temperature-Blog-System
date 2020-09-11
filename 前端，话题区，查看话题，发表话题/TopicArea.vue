@@ -20,7 +20,7 @@
         	</div>
         	<div id="latest-topics-page-controller">
         		<div id="l-t-last-page" v-on:click="LTLastPage">上一页</div>
-            <div :class="{'l-t-page-num':true,'l-t-page-num-selected':item.page==currentPage}" v-for="item in pageNums">
+            <div :class="{'l-t-page-num':true,'l-t-page-num-selected':item.page==currentPage}" v-for="item in pageNums" v-on:click="turnToPage(item.page)">
               {{item.page}}
             </div>
         		<div id="l-t-next-page" v-on:click="LTNextPage">下一页</div>
@@ -31,22 +31,22 @@
             <div id="my-topics">
               <div id="my-topics-title">我的话题</div>
               <div id="my-topisc-msg">
-                我发起了<span>{{myTopicsNum}}</span>个话题，<br />
-                收获了<span>{{myTopicsAnsNum}}</span>个回答
+                我发起了<span>&nbsp;{{myTopicsNum}}&nbsp;</span>个话题，<br />
+                收获了<span>&nbsp;{{myTopicsAnsNum}}&nbsp;</span>个回答
               </div>
               <div id="my-topics-list">
-                <div id="m-t-latest">最近话题</div>
-                <div class="right-aside-list-item" v-for="item in MTopics">
-                  {{item.title}}
+                <div v-for="item in MTopics" class="right-aside-list-item MT-list-item">
+                  <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}">{{item.TopicTitle}}</router-link>
+                  <span v-on:click="deleteTopic(item.TopicId)">删除</span>
                 </div>
               </div>
             </div>
             <div id="hottest-topics">
             	<div id="hottest-topics-title">最热话题</div>
             	<div id="hottest-topics-list">
-            		<router-link v-for="item in HTopics" :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="right-aside-list-item">
-                  {{item.TopicTitle}}
-                </router-link>
+            		<div v-for="item in HTopics" class="right-aside-list-item">
+                  <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}">{{item.TopicTitle}}</router-link>
+                </div>
             	</div>
             </div>
         </div>
@@ -59,28 +59,31 @@
     name: 'TopicArea',
 		data(){
 			return{
-        //myID: 5,
         zoneID: 1,
         LTopicSum: 0,
         LTopicPageSum: 1,
-        LTopicCountPerPage: 2,
+        LTopicCountPerPage: 8,
 				pageNums:[],
 
 				currentPage: 1,
 				currentPageLTopics: [],
 
+        MTcurrentPage: 1,
+        MTopicCountPerPage: 8,
 				myTopicsNum: 0,
 				myTopicsAnsNum: 0,
         MTNum: 8,
         MTopics:[],
+
         HTNum: 8,
         HTopics:[],
+
         ajax_getLatestTopics: 0,
         ajax_getLTopicSum: 0,
         ajax_getHottestTopics: 0,
         ajax_getUserTopicNum: 0,
         ajax_getAnswerNumOfUser: 0,
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6IjgxZWNmNmE1LTJlM2EtNGMwZS04MDcyLWIwNjM4MDVhZjkyYiIsImV4cCI6MTU5OTgzNzU5MiwiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.W4DZo-UAB1MW-uo4v7bppdJwrn9JmjngBP96CXC-gZc",
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6IjAzNzlhNzI0LThjZDUtNDRiMS1hYmZkLWRhMGIzMzUxMGVkOSIsImV4cCI6MTU5OTg0NTE1MSwiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.cTCdjrg7wOX2HaJXU0IuQQDndaIEjx5Y0gcVNjFC4rE",
 			}
 		},
     computed:{
@@ -95,6 +98,7 @@
       this.getLatestTopicsList();
       this.getUserTopicNum();
       this.getAnswerNumOfUser();
+      this.getMyTopic();
       this.getHottestTopics();
     },
     methods:{
@@ -224,6 +228,53 @@
           }
           else{
             alert("getAnswerNumOfUser返回错误");
+          }
+        }
+      },
+      getMyTopic(){
+        var pageNum = this.MTcurrentPage;
+        var pageSize = this.MTopicCountPerPage;
+        var userID = this.myID;
+        this.ajax_getMyTopic = new XMLHttpRequest();
+        this.ajax_getMyTopic.open("POST", "http://139.224.255.43:7779/Topic/getMyTopicByPage?pageNum="+pageNum+"&pageSize="+pageSize+"&userID="+userID, true);
+        this.ajax_getMyTopic.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getMyTopic.onreadystatechange = this.getMT;
+        this.ajax_getMyTopic.send();
+      },
+      getMT(){
+        if (this.ajax_getMyTopic.readyState == 4 && this.ajax_getMyTopic.status == 200) {
+          var receive = JSON.parse(this.ajax_getMyTopic.responseText);
+          if(receive.getTopicFlag==1){
+            this.MTopics=JSON.parse(receive.Result);
+            console.log(this.MTopics);
+          }
+          else{
+            alert("getMyTopicByPage失败");
+          }
+        }
+      },
+      turnToPage(targetPage){
+        this.currentPage=targetPage;
+        this.getLatestTopicsList();
+      },
+      deleteTopic(topicID){
+        this.ajax_deleteTopic = new XMLHttpRequest();
+        this.ajax_deleteTopic.open("POST", "http://139.224.255.43:7779/Topic/deleteTopicByID?topicID="+topicID, true);
+        this.ajax_deleteTopic.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_deleteTopic.onreadystatechange = this.DT;
+        this.ajax_deleteTopic.send();
+      },
+      DT(){
+        if (this.ajax_deleteTopic.readyState == 4 && this.ajax_deleteTopic.status == 200) {
+          var receive = JSON.parse(this.ajax_deleteTopic.responseText);
+          console.log(receive);
+          if(receive.deleteTopicAnswerFlag==0){
+            this.getUserTopicNum();
+            this.getAnswerNumOfUser();
+            this.getMyTopic();
+          }
+          else{
+            alert("deleteTopicByID失败");
           }
         }
       }
@@ -467,6 +518,19 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+  }
+  .right-aside-list-item>span,.right-aside-list-item>a{
+    cursor: pointer;
+  }
+  .right-aside-list-item>span:hover,.right-aside-list-item>a:hover{
+    color: #B23535;
+  }
+  .MT-list-item{
+    display: flex;
+    justify-content: space-between;
+  }
+  .MT-list-item>span{
+    color: gray;
   }
   #hottest-topics{
   	margin-top: 20px;
