@@ -12,11 +12,10 @@
         	</div>
         	<div id="latest-topics-list">
         		<div class="l-t-item" v-for="item in currentPageLTopics" :key="item.TopicId">
-        			<router-link :to="{path:'/ViewTopic', query:{thisTopic:item}}" class="l-t-i-title">{{item.TopicTitle}}</router-link>
-        			<router-link :to="{path:'/ViewTopic', query:{thisTopic:item}}" class="l-t-i-content">{{item.TopicContent}}hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</router-link>
+        			<router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="l-t-i-title">{{item.TopicTitle}}</router-link>
+        			<router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="l-t-i-content">{{item.TopicContent}}</router-link>
         			<span class="l-t-i-time">{{item.TopicUploadTime}}</span>
         			<span class="l-t-i-answerCount">回答：{{item.AnswerNum}}</span>
-        			<span class="l-t-i-delete">删除</span>
         		</div>
         	</div>
         	<div id="latest-topics-page-controller">
@@ -28,7 +27,7 @@
         	</div>
         </div>
         <div id="right-aside">
-            <router-link to="/PostTopic" id="ask-question">我要提问</router-link>
+            <router-link :to="{path:'/PostTopic', query:{userID:myID}}" id="ask-question">我要提问</router-link>
             <div id="my-topics">
               <div id="my-topics-title">我的话题</div>
               <div id="my-topisc-msg">
@@ -45,9 +44,9 @@
             <div id="hottest-topics">
             	<div id="hottest-topics-title">最热话题</div>
             	<div id="hottest-topics-list">
-            		<div class="right-aside-list-item" v-for="item in HTopics">
+            		<router-link v-for="item in HTopics" :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="right-aside-list-item">
                   {{item.TopicTitle}}
-                </div>
+                </router-link>
             	</div>
             </div>
         </div>
@@ -60,6 +59,7 @@
     name: 'TopicArea',
 		data(){
 			return{
+        //myID: 5,
         zoneID: 1,
         LTopicSum: 0,
         LTopicPageSum: 1,
@@ -69,23 +69,32 @@
 				currentPage: 1,
 				currentPageLTopics: [],
 
+				myTopicsNum: 0,
+				myTopicsAnsNum: 0,
         MTNum: 8,
         MTopics:[],
         HTNum: 8,
         HTopics:[],
-				myTopicsNum: 40,
-				myTopicsAnsNum: 0,
         ajax_getLatestTopics: 0,
         ajax_getLTopicSum: 0,
         ajax_getHottestTopics: 0,
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6IjkyYTM3MzFjLTgxODYtNGU0OS04Njk3LWI1ZGYxYzk5OWYyYSIsImV4cCI6MTU5OTY2MDU5MCwiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.S7ZFOdZ0smsaUJnDujswFITJWxssP2pGKZLPKIl14N8",
+        ajax_getUserTopicNum: 0,
+        ajax_getAnswerNumOfUser: 0,
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6IjgxZWNmNmE1LTJlM2EtNGMwZS04MDcyLWIwNjM4MDVhZjkyYiIsImV4cCI6MTU5OTgzNzU5MiwiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.W4DZo-UAB1MW-uo4v7bppdJwrn9JmjngBP96CXC-gZc",
 			}
 		},
+    computed:{
+      myID:function(){
+        return this.$route.query.userID;
+      }
+    },
     created:function(){
       this.setCookie();
       this.getTokenFromCookie();
       this.getLatestTopicsPageMessage();
       this.getLatestTopicsList();
+      this.getUserTopicNum();
+      this.getAnswerNumOfUser();
       this.getHottestTopics();
     },
     methods:{
@@ -174,8 +183,48 @@
       getHT(){
         if (this.ajax_getHottestTopics.readyState == 4 && this.ajax_getHottestTopics.status == 200) {
           var receive = JSON.parse(JSON.parse(this.ajax_getHottestTopics.responseText).topics);
-          //console.log(receive);
+          //console.log(this.ajax_getHottestTopics.responseText);
           this.HTopics=receive;
+        }
+      },
+      getUserTopicNum(){
+        var userID = this.myID;
+        this.ajax_getUserTopicNum = new XMLHttpRequest();
+        this.ajax_getUserTopicNum.open("POST", "http://139.224.255.43:7779/Topic/getUserTopicNum?userID="+userID, true);
+        this.ajax_getUserTopicNum.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getUserTopicNum.onreadystatechange = this.getUTN;
+        this.ajax_getUserTopicNum.send();
+      },
+      getUTN(){
+        if (this.ajax_getUserTopicNum.readyState == 4 && this.ajax_getUserTopicNum.status == 200) {
+          var receive = JSON.parse(this.ajax_getUserTopicNum.responseText);
+          //console.log(receive);
+          if(receive.flag==1){
+            this.myTopicsNum = receive.topicCount;
+          }
+          else{
+            alert("getUserTopicNum返回错误");
+          }
+        }
+      },
+      getAnswerNumOfUser(){
+        var userID = this.myID;//console.log(userID);
+        this.ajax_getAnswerNumOfUser = new XMLHttpRequest();
+        this.ajax_getAnswerNumOfUser.open("POST", "http://139.224.255.43:7779/Topic/getAnswerNumOfUser?userID="+userID, true);
+        this.ajax_getAnswerNumOfUser.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getAnswerNumOfUser.onreadystatechange = this.getANOU;
+        this.ajax_getAnswerNumOfUser.send();
+      },
+      getANOU(){
+        if (this.ajax_getAnswerNumOfUser.readyState == 4 && this.ajax_getAnswerNumOfUser.status == 200) {
+          var receive = JSON.parse(this.ajax_getAnswerNumOfUser.responseText);
+          //console.log(receive);
+          if(receive.flag==1){
+            this.myTopicsAnsNum = receive.userTopicAnswerCount;
+          }
+          else{
+            alert("getAnswerNumOfUser返回错误");
+          }
         }
       }
     }
@@ -186,6 +235,10 @@
   *{
   	margin: 0px;
   	padding: 0px;
+  }
+  a{
+    text-decoration: none;
+    color: black;
   }
   #topic-area-page{
     display: flex;
@@ -198,13 +251,14 @@
     align-self: center;
     justify-content: center;
     align-items: center;
+    background-color: rgb(15,13,24);
 
   	height: 352px;
   	width: 100%;
     overflow: hidden;
   }
   #photo>img{
-    width: calc(880px + 40px + 360px);
+    height: 100%;
   }
   #main{
     display: flex;
@@ -313,18 +367,6 @@
 
   	color: #000000;
   }
-  .l-t-i-delete{
-  	display: inline-block;
-  	margin-left: 60px;
-  	width: fit-content;
-
-  	font-size: 18px;
-  	line-height: 25px;
-  	text-decoration-line: underline;
-
-  	color: #999494;
-    cursor: pointer;
-  }
   #latest-topics-page-controller{
     display: flex;
     align-items: center;
@@ -418,6 +460,7 @@
   	color: #727272;
   }
   .right-aside-list-item{
+    display: block;
     padding: 10px 20px;
 
     /*实现超过一行的显示省略号*/

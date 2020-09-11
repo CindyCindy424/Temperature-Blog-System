@@ -3,49 +3,47 @@
     <div id="left-aside">
       <div id="author-info">
         <div id="author-info-img-and-text">
-          <img id="author-info-img" />
+          <img id="author-info-img" :src="loc+thisTopicUser.avatr" />
           <div id="author-info-text">
-            <div id="author-info-name">TEMP</div>
-            <div id="author-info-signature">心如止水。</div>
+            <div id="author-info-name">{{thisTopicUser.nickName}}</div>
+            <div id="author-info-signature">{{thisTopicUser.annoucement}}</div>
           </div>
         </div>
         <div id="author-info-buttons">
-          <div id="follow">+关注</div>
-          <div id="private-letter">私信</div>
+          <div id="follow" v-on:click="follow">+关注</div>
           <div id="personel-center">个人中心</div>
         </div>
       </div>
       <div id="latest-topic" class="left-aside-topic-card">
         <div class="left-aside-subtitle">最新话题</div>
         <div class="left-aside-list">
-          <div class="left-aside-list-item" v-for="item in LTopics">
+          <router-link v-for="item in LTopics" :to="{path:'/ViewTopic', query:{topicID:item.TopicId}}" class="left-aside-list-item">
             {{item.TopicTitle}}
-          </div>
+          </router-link>
         </div>
       </div>
       <div id="hotest-topic" class="left-aside-topic-card">
         <div class="left-aside-subtitle">最热话题</div>
         <div class="left-aside-list">
-          <div class="left-aside-list-item" v-for="item in HTopics">
+          <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId}}" class="left-aside-list-item" v-for="item in HTopics">
             {{item.TopicTitle}}
-          </div>
+          </router-link>
         </div>
       </div>
     </div>
     <div id="topic-and-answer">
       <div id="this-topic">
-        <div id="topic-title">{{thisTopic.TopicTitle}}</div>
+        <div id="topic-title">{{topicDetail.topicTitle}}</div>
         <div id="topic-message">
-          <div id="date-and-time">{{thisTopic.TopicUploadTime}}</div>
-          <div id="view-count">浏览次数：233</div>
-          <div id="topic-tag">tag:开发</div>
+          <div id="date-and-time">{{topicDetail.topicUploadTime}}</div>
+          <div id="topic-zone">分区:{{topicDetail.zoneId}} {{topicDetail.zone}}(有id，无名称)</div>
         </div>
-        <div id="topic-content">{{thisTopic.TopicContent}}</div>
+        <div id="topic-content">{{topicDetail.topicContent}}</div>
       </div>
       <div id="answer-count">{{Answers.length}} 个回答</div>
       <div class="answer-item" v-for="item in Answers">
         <div class="answer-author">
-          <img class="answer-author-avatar" />
+          <img class="answer-author-avatar" :src="loc+item.topicInfo.avatr"/>
           <div class="answer-author-name">UserId={{item.topicInfo.UserID}}</div>
         </div>
         <div class="answer-content">{{item.topicInfo.Content}}</div>
@@ -60,7 +58,7 @@
             <div class="leave-comment-button">发表</div>
           </div>
           <div class="comment-item" v-for="com in item.userComments">
-            <img class="comment-author-avatar" :src="com.avatr"></img>
+            <img class="comment-author-avatar" :src="loc+com.userInfo.avatr"></img>
             <div class="comment-author-name">{{com.userInfo.nickName}}：</div>
             <div class="comment-content">{{com.userComment.Content}}</div>
           </div>
@@ -68,7 +66,6 @@
       </div>
       <div id="editor">
         <quill-editor ref="text" class="myQuillEditor" />
-
       </div>
     </div>
   </div>
@@ -85,7 +82,9 @@
     },
     data(){
       return {
-        thisTopic: 0,
+        loc:'http://139.224.255.43:7779/',
+        thisTopicUser: 0,
+        topicDetail: 0,
         Answers: [],
 
         LTNum: 8,
@@ -97,18 +96,35 @@
         ajax_getLatestTopics: 0,
         ajax_getHottestTopics: 0,
         ajax_getAnswers: 0,
-        ajax_getTopicDetailByID: 0
+        ajax_getTopicDetailByID: 0,
+        ajax_getUserInfoByID: 0,
+        ajax_getSingleTopicDetail: 0,
+        ajax_follow: 0
       };
     },
     created:function(){
-      this.getThisTopic();
-      //this.getAnswers();
-      this.getTopicDetailByID();
-      this.getHottestTopics();
-      this.getLatestTopics();
+      this.buildData();
+    },
+    computed:{
+      thisTopic:function(){
+        return this.$route.query.topicID;
+      },
+      myID:function(){
+        return this.$route.query.userID;
+      }
+    },
+    watch:{
+      thisTopic:function(a,b){
+        this.buildData();
+      },
     },
     methods:{
-      getTokenFromCookie(){
+      buildData(){                        //获取整个页面的数据结构
+        this.getSingleTopicDetail();      //根据topicID获取话题信息->获取用户信息、获取回答
+        this.getLatestTopics();           //获取最新话题
+        this.getHottestTopics();          //获取最热话题
+      },
+      getTokenFromCookie(){               //从当下cookie获取token
         //console.log(document.cookie);
         var cookie=document.cookie;
         var cookieArr=cookie.split(";");
@@ -120,29 +136,7 @@
           }
         }
       },
-      getThisTopic(){
-        this.thisTopic = this.$route.query.thisTopic;
-        //console.log(this.thisTopic);
-      },
-      getAnswers(){
-        var topicID = this.thisTopic.TopicId;
-        this.ajax_getAnswers = new XMLHttpRequest();
-        this.ajax_getAnswers.open("POST", "http://139.224.255.43:7779/Topic/getTopicCommentByID?topicID="+topicID, true);
-        this.ajax_getAnswers.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
-        this.ajax_getAnswers.onreadystatechange = this.getAns;
-        this.ajax_getAnswers.send();
-      },
-      getAns(){
-        if (this.ajax_getAnswers.readyState == 4 && this.ajax_getAnswers.status == 200) {
-          //console.log(this.ajax_getAnswers.responseText);
-          var receive = JSON.parse(JSON.parse(this.ajax_getAnswers.responseText).Result);
-          this.Answers = receive;
-          for(var i = 0; i < this.Answers.length; i++){
-            this.Answers[i].AnswerUploadTime=this.Answers[i].AnswerUploadTime.replace("T","  ");
-          }
-        }
-      },
-      getLatestTopics(){
+      getLatestTopics(){                  //获取最新话题
         var takeTopicNum = this.LTNum;
         this.ajax_getLatestTopics = new XMLHttpRequest();
         this.ajax_getLatestTopics.open("POST", "http://139.224.255.43:7779/Topic/getNewestTopic?takeTopicNum="+takeTopicNum, true);
@@ -150,14 +144,14 @@
         this.ajax_getLatestTopics.onreadystatechange = this.getLT;
         this.ajax_getLatestTopics.send();
       },
-      getLT(){
+      getLT(){                            //最新话题附属函数
         if (this.ajax_getLatestTopics.readyState == 4 && this.ajax_getLatestTopics.status == 200) {
           var receive = JSON.parse(JSON.parse(this.ajax_getLatestTopics.responseText).topics);
-          console.log(receive);
+          //console.log(receive);
           this.LTopics=receive;
         }
       },
-      getHottestTopics(){
+      getHottestTopics(){                 //获取最热话题
         var takeTopicNum = this.HTNum;
         this.ajax_getHottestTopics = new XMLHttpRequest();
         this.ajax_getHottestTopics.open("POST", "http://139.224.255.43:7779/Topic/getHotestTopic?takeTopicNum="+takeTopicNum, true);
@@ -165,35 +159,35 @@
         this.ajax_getHottestTopics.onreadystatechange = this.getHT;
         this.ajax_getHottestTopics.send();
       },
-      getHT(){
+      getHT(){                            //最热话题附属函数
         if (this.ajax_getHottestTopics.readyState == 4 && this.ajax_getHottestTopics.status == 200) {
           var receive = JSON.parse(JSON.parse(this.ajax_getHottestTopics.responseText).topics);
           //console.log(receive);
           this.HTopics=receive;
         }
       },
-      getTopicDetailByID(){
-        var topicID = this.thisTopic.TopicId;
+      getTopicDetailByID(){               //获取话题回答
+        var topicID = this.thisTopic;
         this.ajax_getTopicDetailByID = new XMLHttpRequest();
         this.ajax_getTopicDetailByID.open("POST", "http://139.224.255.43:7779/Topic/getTopicDetailByID?topicID="+topicID, true);
         this.ajax_getTopicDetailByID.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
         this.ajax_getTopicDetailByID.onreadystatechange = this.getTD;
         this.ajax_getTopicDetailByID.send();
       },
-      getTD(){
+      getTD(){                            //话题回答附属函数
         if (this.ajax_getTopicDetailByID.readyState == 4 && this.ajax_getTopicDetailByID.status == 200) {
           var receive = JSON.parse(this.ajax_getTopicDetailByID.responseText).answerUserList;
           this.answerUserList=receive;
-          //console.log(receive);
-          //this.HTopics=receive;
+          console.log(receive);
           this.sortOutAnswerList();
         }
       },
-      sortOutAnswerList(){
+      sortOutAnswerList(){                //整理话题回答
         var answerList=this.answerUserList;
         //console.log(answerList);
         for(var i=0;i<answerList.length;i++){
           answerList[i]=JSON.parse(answerList[i]);                      //将每个回答变成对象
+          //console.log(answerList[i]);
           answerList[i].topicInfo=JSON.parse(answerList[i].topicInfo);  //将话题信息变成对象
           answerList[i].topicInfo.UploadTime=answerList[i].topicInfo.UploadTime.replace("T","  ");//去掉时间中的"T"
           for(var j=0;j<answerList[i].userComments.length;j++){         //将评论变成对象
@@ -204,6 +198,60 @@
         }
         //console.log(answerList);
         this.Answers=answerList;
+      },
+      getUserInfoByID(){                  //获取用户信息
+        var user_id = this.topicDetail.userId;
+        //console.log(this.topicDetail.userId);
+        this.ajax_getUserInfoByID = new XMLHttpRequest();
+        this.ajax_getUserInfoByID.open("POST", "http://139.224.255.43:7779/Account/getUserInfoByID?user_id="+user_id, true);
+        this.ajax_getUserInfoByID.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getUserInfoByID.onreadystatechange = this.getUIBID;
+        this.ajax_getUserInfoByID.send();
+      },
+      getUIBID(){                         //用户信息附属函数
+        if (this.ajax_getUserInfoByID.readyState == 4 && this.ajax_getUserInfoByID.status == 200) {
+          var receive = JSON.parse(this.ajax_getUserInfoByID.responseText);
+          this.thisTopicUser=receive.userInfo;
+          //console.log(receive);
+        }
+      },
+      getSingleTopicDetail(){             //获取话题信息
+        var topicID = this.thisTopic;
+        this.ajax_getSingleTopicDetail = new XMLHttpRequest();
+        this.ajax_getSingleTopicDetail.open("POST", "http://139.224.255.43:7779/Topic/getSingleTopicDetail?topicID="+topicID, true);
+        this.ajax_getSingleTopicDetail.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_getSingleTopicDetail.onreadystatechange = this.getSTD;
+        this.ajax_getSingleTopicDetail.send();
+      },
+      getSTD(){                           //话题信息附属函数
+        if (this.ajax_getSingleTopicDetail.readyState == 4 && this.ajax_getSingleTopicDetail.status == 200) {
+          var receive = JSON.parse(this.ajax_getSingleTopicDetail.responseText);
+          if(receive.flag==1){
+            receive.topicDetail.topicUploadTime=receive.topicDetail.topicUploadTime.replace("T","  ");
+            this.topicDetail=receive.topicDetail;
+            this.getTopicDetailByID();        //根据topicID获取回答（数据包含部分话题信息，但不完整，所以不用）
+            this.getUserInfoByID();           //获取用户信息
+          }
+          else{
+            alert("getSingleTopicDetail失败");
+          }
+        }
+      },
+      follow(){                           //关注功能
+        alert("功能未开发");
+        var nameOfBlogger = "no"
+        var nameOfFans = "no";
+        this.ajax_follow = new XMLHttpRequest();
+        this.ajax_follow.open("POST", "http://139.224.255.43:7779/Account/createFollowByNickNames?nameOfBlogger="+nameOfBlogger+"&nameOfFans="+nameOfFans, true);
+        this.ajax_follow.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_follow.onreadystatechange = this.fw;
+        this.ajax_follow.send();
+      },
+      fw(){                               //关注功能附属函数
+        if (this.ajax_follow.readyState == 4 && this.ajax_follow.status == 200) {
+          var receive = JSON.parse(this.ajax_follow.responseText);
+          //console.log(receive);
+        }
       }
     }
   }
@@ -213,6 +261,10 @@
   *{
     margin: 0px;
     padding: 0px;
+  }
+  a{
+    text-decoration: none;
+    color: black;
   }
   #view-topic-page{
     display: flex;
@@ -278,9 +330,6 @@
     background: #B23535;
     color: white;
   }
-  #private-letter{
-    background: #DAD4D4;
-  }
   #personel-center{
     background: #DAD4D4;
   }
@@ -306,6 +355,7 @@
     padding: 10px 0px;
   }
   .left-aside-list-item{
+    display: block;
     padding: 10px 20px;
     cursor: pointer;
 
@@ -341,7 +391,7 @@
     font-size: 13px;
     line-height: 13px;
   }
-  #view-count,#topic-tag{
+  #topic-zone{
     margin-left: 60px;
   }
   #topic-content{
