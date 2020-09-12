@@ -14,12 +14,18 @@
       </div>
       <div class="subtitle">分区：</div>
       <select id="zone-select" v-model="zoneID">
-        <option value="1">1区</option>
-        <option value="1">2区</option>
-        <option value="1">3区</option>
-        <option value="1">4区</option>
-        <option value="1">5区</option>
-        <option value="1">6区</option>
+        <option value="1">学习</option>
+        <option value="2">生活</option>
+        <option value="3">开发</option>
+        <option value="4">游戏</option>
+        <option value="5">娱乐</option>
+        <option value="6">体育</option>
+        <option value="7">影视</option>
+        <option value="8">资讯</option>
+        <option value="9">时尚</option>
+        <option value="10">舞蹈</option>
+        <option value="11">音乐</option>
+        <option value="12">其他</option>
       </select>
       <div id="buttons">
         <div id="post" v-on:click="post">发表</div>
@@ -67,16 +73,16 @@
         }
       },
       post(){
-        var content=this.content;
-        var title=this.title;
-        var userID=this.myID;
-        var zoneID=this.zoneID;
+        var forms=new FormData();
+        forms.append('content',this.content);
+        forms.append('title',this.title);
+        forms.append('userID',this.myID);
+        forms.append('zoneID',this.zoneID);
         this.ajax_post = new XMLHttpRequest();
-        this.ajax_post.open("POST", "http://139.224.255.43:7779/Topic/createTopicByID?content="+content+"&title="+title+"&userID="+userID+"&zoneID="+zoneID, true);
+        this.ajax_post.open("POST", "http://139.224.255.43:7779/Topic/createTopicByID", true);
         this.ajax_post.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
         this.ajax_post.onreadystatechange = this.po;
-        this.ajax_post.send();
-
+        this.ajax_post.send(forms);
       },
       po(){
         if (this.ajax_post.readyState == 4 && this.ajax_post.status == 200) {
@@ -85,6 +91,7 @@
           if(receive.createTopicFlag==1){
             alert("发表成功！");
             this.$router.go(-1);
+            //this.$router.push({path:'/ViewTopic',query:{userID:this.myID,topicID:receive.topicID}});
           }
         }
       }
@@ -114,10 +121,10 @@
 
   	height: 352px;
   	width: 100%;
-    overflow: hidden;
+    background-color: rgb(15,13,24);
   }
   #photo-div>img{
-    width: var(--page-content-width);
+    height: 100%;
   }
   #my-question{
     width: calc(var(--page-content-width) - 40px);

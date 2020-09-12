@@ -10,7 +10,7 @@
           </div>
         </div>
         <div id="author-info-buttons">
-          <div id="follow" v-on:click="follow">+关注</div>
+          <div id="follow" v-show="!isMyTopic" v-on:click="follow">{{isFollowed?"已关注":"+关注"}}</div>
           <div id="personel-center">个人中心</div>
         </div>
       </div>
@@ -36,7 +36,7 @@
         <div id="topic-title">{{topicDetail.topicTitle}}</div>
         <div id="topic-message">
           <div id="date-and-time">{{topicDetail.topicUploadTime}}</div>
-          <div id="topic-zone">分区:{{topicDetail.zoneId}} {{topicDetail.zone}}(有id，无名称)</div>
+          <div id="topic-zone">分区：{{topicDetail.zoneName}}</div>
         </div>
         <div id="topic-content">{{topicDetail.topicContent}}</div>
       </div>
@@ -70,6 +70,7 @@
         <div id="upload-answer" v-on:click="answerTopic">上传回答</div>
       </div>
     </div>
+    <div class="loading-mask" v-show="isloading"></div>
   </div>
 </template>
 
@@ -85,7 +86,8 @@
     data(){
       return {
         loc:'http://139.224.255.43:7779/',
-        thisTopicUser: 0,
+        thisTopicUser: {},
+        isFollowed: false,
         topicDetail: 0,
         Answers: [],
 
@@ -96,14 +98,8 @@
         answerUserList:[],
 
         myAnswerContent: "",
-
-        ajax_getLatestTopics: 0,
-        ajax_getHottestTopics: 0,
-        ajax_getAnswers: 0,
-        ajax_getTopicDetailByID: 0,
-        ajax_getUserInfoByID: 0,
-        ajax_getSingleTopicDetail: 0,
-        ajax_follow: 0
+        
+        isloading:false,
       };
     },
     created:function(){
@@ -121,6 +117,10 @@
           alert("缺少值：this.$route.query.userID")
         }
         return this.$route.query.userID;
+      },
+      isMyTopic:function(){
+        //console.log(this.thisTopicUser.userId==this.myID);
+        return this.thisTopicUser.userId==this.myID;
       }
     },
     watch:{
@@ -225,6 +225,7 @@
           receive.userInfo.userAnnouncement=receive.userAnnouncement;
           this.thisTopicUser=receive.userInfo;
           //console.log(receive.userAnnouncement);
+          this.checkFollow();
         }
       },
       getSingleTopicDetail(){             //获取话题信息
@@ -243,7 +244,7 @@
             this.topicDetail=receive.topicDetail;
             this.getTopicDetailByID();        //根据topicID获取回答（数据包含部分话题信息，但不完整，所以不用）
             this.getUserInfoByID();           //获取用户信息
-            console.log(receive);
+            //console.log(receive);
           }
           else{
             alert("getSingleTopicDetail失败");
@@ -251,31 +252,53 @@
         }
       },
       follow(){                           //关注功能
-        var idOfBlogger = this.thisTopicUser.userId;
+        var idOfBlogger = this.thisTopicUser.userId;//alert(1);
         var idOfFans = this.myID;
         //console.log(this.thisTopicUser);
-        this.ajax_follow = new XMLHttpRequest();
-        this.ajax_follow.open("POST", "http://139.224.255.43:7779/Account/createFollowByID?idOfBlogger="+idOfBlogger+"&idOfFans="+idOfFans, true);
-        this.ajax_follow.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
-        this.ajax_follow.onreadystatechange = this.fw;
-        this.ajax_follow.send();
+        if(!this.isFollowed){
+          this.ajax_follow = new XMLHttpRequest();
+          this.ajax_follow.open("POST", "http://139.224.255.43:7779/Account/createFollowByID?idOfBlogger="+idOfBlogger+"&idOfFans="+idOfFans, true);
+          this.ajax_follow.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+          this.ajax_follow.onreadystatechange = this.fw;
+          this.ajax_follow.send();
+        }
+        else{
+          this.ajax_dfollow = new XMLHttpRequest();
+          this.ajax_dfollow.open("POST", "http://139.224.255.43:7779/Account/deleteFollowByID?idOfBlogger="+idOfBlogger+"&idOfFans="+idOfFans, true);
+          this.ajax_dfollow.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+          this.ajax_dfollow.onreadystatechange = this.dfw;
+          this.ajax_dfollow.send();
+        }
       },
       fw(){                               //关注功能附属函数
         if (this.ajax_follow.readyState == 4 && this.ajax_follow.status == 200) {
           var receive = JSON.parse(this.ajax_follow.responseText);
-          console.log(receive);
+          //console.log(receive);
+          if(receive.createFlag==1){
+            this.isFollowed=!this.isFollowed;
+          }
+        }
+      },
+      dfw(){                               //关注功能附属函数
+        if (this.ajax_dfollow.readyState == 4 && this.ajax_dfollow.status == 200) {
+          var receive = JSON.parse(this.ajax_dfollow.responseText);
+          //console.log(receive);
+          if(receive.getFlag==1){
+            this.isFollowed=!this.isFollowed;
+          }
         }
       },
       answerTopic(){
-        var content=this.myAnswerContent;
-        var topicID=this.thisTopic;
-        var userID=this.myID;
-        var parentID= "-1";console.log(content,topicID,userID,parentID)
+        var forms=new FormData();
+        forms.append('content',this.myAnswerContent);
+        forms.append('topicID',this.thisTopic);
+        forms.append('userID',this.myID);
+        forms.append('parentID', -1);
         this.ajax_answerTopic = new XMLHttpRequest();
-        this.ajax_answerTopic.open("POST", "http://139.224.255.43:7779/Topic/createTopicAnswerByID?content="+content+"&topicID="+topicID+"&userID="+userID+"&parentID="+parentID, true);
+        this.ajax_answerTopic.open("POST", "http://139.224.255.43:7779/Topic/createTopicAnswerByID", true);
         this.ajax_answerTopic.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
         this.ajax_answerTopic.onreadystatechange = this.AT;
-        this.ajax_answerTopic.send();
+        this.ajax_answerTopic.send(forms);
       },
       AT(){
         if (this.ajax_answerTopic.readyState == 4 && this.ajax_answerTopic.status == 200) {
@@ -292,16 +315,17 @@
         }
       },
       commentAnswer(item){
-        var content=item.myComment;
-        var topicID=this.thisTopic;
-        var userID=this.myID;
-        var parentID= item.firstLevelComment.TopicAnswerID;
+        var forms=new FormData();
+        forms.append('content',item.myComment);
+        forms.append('topicID',this.thisTopic);
+        forms.append('userID',this.myID);
+        forms.append('parentID',item.firstLevelComment.TopicAnswerID);
         //console.log("http://139.224.255.43:7779/Topic/createTopicAnswerByID?content="+content+"&topicID="+topicID+"&userID="+userID+"&parentID="+parentID);
         this.ajax_commentAnswer = new XMLHttpRequest();
-        this.ajax_commentAnswer.open("POST", "http://139.224.255.43:7779/Topic/createTopicAnswerByID?content="+content+"&topicID="+topicID+"&userID="+userID+"&parentID="+parentID, true);
+        this.ajax_commentAnswer.open("POST", "http://139.224.255.43:7779/Topic/createTopicAnswerByID", true);
         this.ajax_commentAnswer.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
         this.ajax_commentAnswer.onreadystatechange = this.CA;
-        this.ajax_commentAnswer.send();
+        this.ajax_commentAnswer.send(forms);
       },
       CA(){
         if (this.ajax_commentAnswer.readyState == 4 && this.ajax_commentAnswer.status == 200) {
@@ -312,6 +336,28 @@
           }
           else{
             alert("评论失败");
+          }
+          //console.log(receive);
+        }
+      },
+      checkFollow(item){
+        var idOfCurrentUser=this.myID;
+        var idOfCheckUser= this.thisTopicUser.userId;
+        //console.log(idOfCheckUser);
+        this.ajax_checkFollow = new XMLHttpRequest();
+        this.ajax_checkFollow.open("POST", "http://139.224.255.43:7779/Account/checkFollow?idOfCurrentUser="+idOfCurrentUser+"&idOfCheckUser="+idOfCheckUser, true);
+        this.ajax_checkFollow.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
+        this.ajax_checkFollow.onreadystatechange = this.CF;
+        this.ajax_checkFollow.send();
+      },
+      CF(){
+        if (this.ajax_checkFollow.readyState == 4 && this.ajax_checkFollow.status == 200) {
+          var receive = JSON.parse(this.ajax_checkFollow.responseText);
+          if(receive.result=="False"){
+            this.isFollowed=false;
+          }
+          else{
+            this.isFollowed=true;
           }
           //console.log(receive);
         }

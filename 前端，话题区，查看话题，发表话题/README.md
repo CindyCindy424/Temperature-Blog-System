@@ -4,19 +4,22 @@
 
 ## 开发环境
 
-需要安装富文本编辑器的环境：
+需要安装富文本编辑器的环境（导入但没有使用）：
 
 1. 在项目根目录下执行命令cnpm install vue-quill-editor 
 
 ## query传值
 
-* 传值形式如下：
+* 跳转传值形式如下（两种皆可）：
 
     * `<router-link :to="{path:'/ViewTopic', query:{topicID:TopicId,userID:myID}}">链接</router-link>`
+    * `this.$router.push({path:'/ViewTopic',query:{userID:this.myID,topicID:receive.topicID}});`
 
 * 导航到TopicArea页面需要传值：
 
     * userID（当前登录的用户ID）
+
+    * zoneID（按分区查看话题）
 
 * 导航到ViewTopic页面需要传值：
 

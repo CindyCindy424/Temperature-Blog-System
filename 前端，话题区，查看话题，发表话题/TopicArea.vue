@@ -1,60 +1,77 @@
 <template>
-  <div id="topic-area-page">
-			<div id="photo">
-        <img src="../assets/images/banner.png" />
-			</div>
-      <div id="main">
-        <div id="latest-topics">
-        	<div id="latest-topics-title">
-        		<span>最新话题</span>
-        		<input id="topics-search-box" type="text" placeholder="                         搜索话题"/>
-        		<div id="topics-search-button"></div>
-        	</div>
-        	<div id="latest-topics-list">
-        		<div class="l-t-item" v-for="item in currentPageLTopics" :key="item.TopicId">
-        			<router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="l-t-i-title">{{item.TopicTitle}}</router-link>
-        			<router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="l-t-i-content">{{item.TopicContent}}</router-link>
-        			<span class="l-t-i-time">{{item.TopicUploadTime}}</span>
-        			<span class="l-t-i-answerCount">回答：{{item.AnswerNum}}</span>
-        		</div>
-        	</div>
-        	<div id="latest-topics-page-controller">
-        		<div id="l-t-last-page" v-on:click="LTLastPage">上一页</div>
-            <div :class="{'l-t-page-num':true,'l-t-page-num-selected':item.page==currentPage}" v-for="item in pageNums" v-on:click="turnToPage(item.page)">
-              {{item.page}}
-            </div>
-        		<div id="l-t-next-page" v-on:click="LTNextPage">下一页</div>
-        	</div>
+  <div id="topic-area-page" :class="{loading:isLoading}">
+    <div id="photo">
+      <img src="../assets/images/banner.png" />
+    </div>
+    <div id="main">
+      <div id="latest-topics">
+        <div id="latest-topics-title">
+          <span>最新话题</span>
+          <div id="LT-zone-select-div">
+          <select  v-model="zoneID">
+            <option value="1">学习</option>
+            <option value="2">生活</option>
+            <option value="3">开发</option>
+            <option value="4">游戏</option>
+            <option value="5">娱乐</option>
+            <option value="6">体育</option>
+            <option value="7">影视</option>
+            <option value="8">资讯</option>
+            <option value="9">时尚</option>
+            <option value="10">舞蹈</option>
+            <option value="11">音乐</option>
+            <option value="12">其他</option>
+          </select>
+          </div>
+          <input id="topics-search-box" type="text" placeholder="搜索话题" v-model="LTSearchInput"/>
+          <div id="topics-search-button" v-on:click="MTSearch"></div>
         </div>
-        <div id="right-aside">
-            <router-link :to="{path:'/PostTopic', query:{userID:myID}}" id="ask-question">我要提问</router-link>
-            <div id="my-topics">
-              <div id="my-topics-title">我的话题</div>
-              <div id="my-topisc-msg">
-                我发起了<span>&nbsp;{{myTopicsNum}}&nbsp;</span>个话题，<br />
-                收获了<span>&nbsp;{{myTopicsAnsNum}}&nbsp;</span>个回答
-              </div>
-              <div id="my-topics-list">
-                <div v-for="item in MTopics" class="right-aside-list-item MT-list-item">
-                  <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}">{{item.TopicTitle}}</router-link>
-                  <span v-on:click="deleteTopic(item.TopicId)">删除</span>
-                </div>
-              </div>
-              <div id="my-topic-controller">
-                <div id="MT-last-page" v-on:click="MTLastPage">上一页</div>
-                <div id="MT-next-page" v-on:click="MTNextPage">下一页</div>
-              </div>
-            </div>
-            <div id="hottest-topics">
-            	<div id="hottest-topics-title">最热话题</div>
-            	<div id="hottest-topics-list">
-            		<div v-for="item in HTopics" class="right-aside-list-item">
-                  <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}">{{item.TopicTitle}}</router-link>
-                </div>
-            	</div>
-            </div>
+        <div id="latest-topics-list">
+          <div class="l-t-item" v-for="item in currentPageLTopics" :key="item.TopicId">
+            <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="l-t-i-title">{{item.TopicTitle}}</router-link>
+            <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}" class="l-t-i-content">{{item.TopicContent}}</router-link>
+            <span class="l-t-i-time">{{item.TopicUploadTime}}</span>
+            <span class="l-t-i-answerCount">回答：{{item.AnswerNum}}</span>
+          </div>
+        </div>
+        <div id="latest-topics-page-controller">
+          <div id="l-t-last-page" v-on:click="LTLastPage">上一页</div>
+          <div :class="{'l-t-page-num':true,'l-t-page-num-selected':item.page==currentPage}" v-for="item in pageNums" v-on:click="turnToPage(item.page)">
+            {{item.page}}
+          </div>
+          <div id="l-t-next-page" v-on:click="LTNextPage">下一页</div>
         </div>
       </div>
+      <div id="right-aside">
+          <router-link :to="{path:'/PostTopic', query:{userID:myID}}" id="ask-question">我要提问</router-link>
+          <div id="my-topics">
+            <div id="my-topics-title">我的话题</div>
+            <div id="my-topisc-msg">
+              我发起了<span>&nbsp;{{myTopicsNum}}&nbsp;</span>个话题，<br />
+              收获了<span>&nbsp;{{myTopicsAnsNum}}&nbsp;</span>个回答
+            </div>
+            <div id="my-topics-list">
+              <div v-for="item in MTopics" class="right-aside-list-item MT-list-item">
+                <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}">{{item.TopicTitle}}</router-link>
+                <span v-on:click="deleteTopic(item.TopicId)">删除</span>
+              </div>
+            </div>
+            <div id="my-topic-controller">
+              <div id="MT-last-page" v-on:click="MTLastPage">上一页</div>
+              <div id="MT-next-page" v-on:click="MTNextPage">下一页</div>
+            </div>
+          </div>
+          <div id="hottest-topics">
+            <div id="hottest-topics-title">最热话题</div>
+            <div id="hottest-topics-list">
+              <div v-for="item in HTopics" class="right-aside-list-item">
+                <router-link :to="{path:'/ViewTopic', query:{topicID:item.TopicId,userID:myID}}">{{item.TopicTitle}}</router-link>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="loading-mask" v-show="isLoading"></div>
 	</div>
 </template>
 
@@ -63,7 +80,8 @@
     name: 'TopicArea',
 		data(){
 			return{
-        zoneID: 1,
+        zoneID: 0,
+        LTSearchInput: "",
         LTopicSum: 0,
         LTopicPageSum: 1,
         LTopicCountPerPage: 8,
@@ -82,12 +100,7 @@
         HTNum: 8,
         HTopics:[],
 
-        ajax_getLatestTopics: 0,
-        ajax_getLTopicSum: 0,
-        ajax_getHottestTopics: 0,
-        ajax_getUserTopicNum: 0,
-        ajax_getAnswerNumOfUser: 0,
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6Ijk0ODM4ZThkLTg4NmMtNGI5MC1hNDJkLTFlYzE5MWI4YmYzMCIsImV4cCI6MTU5OTg3NTI5MywiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.31vehnNNqfwTvw8GEo0EhQNR3ztXT5Oeyadv-FXaAq0",
+        isLoading: false,
 			}
 		},
     computed:{
@@ -96,18 +109,34 @@
           alert("缺少值：this.$route.query.userID")
         }
         return this.$route.query.userID;
+      },
+      loadingX:function(){
+        return document.clientX;
+      },
+      loadingY:function(){
+        return document.clientY;
+      }
+    },
+    watch:{
+      zoneID:function(){
+          this.getLatestTopicsPageMessage();
       }
     },
     created:function(){
-      this.setCookie();
-      this.getLatestTopicsPageMessage();
+      this.getZoneID();
       this.getUserTopicNum();
       this.getAnswerNumOfUser();
       this.getHottestTopics();
     },
     methods:{
-      setCookie(){
-        document.cookie="token="+this.token+";expires=Sun, 31 Dec 2090 12:00:00 UTC";
+      getZoneID(){
+        if(this.$route.query.zoneID==undefined){
+          alert("缺少值：this.$route.query.zoneID")
+        }
+        else{
+          this.zoneID=this.$route.query.zoneID;
+          this.getLatestTopicsPageMessage();
+        }
       },
       getTokenFromCookie(){
         //console.log(document.cookie);
@@ -301,6 +330,9 @@
           this.MTcurrentPage++;
           this.getMyTopic();
         }
+      },
+      MTSearch(){
+        //this.$router.push({path:'/组件名',query:{text:this.LTSearchInput,zoneID:this.zoneID}});
       }
     }
   }
@@ -314,6 +346,13 @@
   a{
     text-decoration: none;
     color: black;
+  }
+  .loading-mask{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.4);
+    cursor: wait;
   }
   #topic-area-page{
     display: flex;
@@ -330,7 +369,6 @@
 
   	height: 352px;
   	width: 100%;
-    overflow: hidden;
   }
   #photo>img{
     height: 100%;
@@ -351,17 +389,25 @@
   	background: #FFFFFF;
   	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
   }
-  #latest-topics-title>span{
+  #LT-zone-select-div{
+    display: flex;
     flex-grow: 1;
-
+  }
+  #LT-zone-select-div>select{
+    margin-left: 40px;
+    padding: 5px 20px;
+    font-size: 18px;
+  }
+  #latest-topics-title>span{
     text-align: left;
   	font-size: 24px;
   	color: #000000;
   }
   #topics-search-box{
-  	width: 282px;
-  	height: 35px;
+  	width: 280px;
+    padding: 2px 20px;
   	line-height: 35px;
+    font-size: 14px;
 
   	background: #E8E2E2;
   	border-radius: 8px;
