@@ -40,6 +40,10 @@
                   <span v-on:click="deleteTopic(item.TopicId)">删除</span>
                 </div>
               </div>
+              <div id="my-topic-controller">
+                <div id="MT-last-page" v-on:click="MTLastPage">上一页</div>
+                <div id="MT-next-page" v-on:click="MTNextPage">下一页</div>
+              </div>
             </div>
             <div id="hottest-topics">
             	<div id="hottest-topics-title">最热话题</div>
@@ -69,7 +73,7 @@
 				currentPageLTopics: [],
 
         MTcurrentPage: 1,
-        MTopicCountPerPage: 8,
+        MTopicCountPerPage: 5,
 				myTopicsNum: 0,
 				myTopicsAnsNum: 0,
         MTNum: 8,
@@ -83,22 +87,22 @@
         ajax_getHottestTopics: 0,
         ajax_getUserTopicNum: 0,
         ajax_getAnswerNumOfUser: 0,
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6IjAzNzlhNzI0LThjZDUtNDRiMS1hYmZkLWRhMGIzMzUxMGVkOSIsImV4cCI6MTU5OTg0NTE1MSwiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.cTCdjrg7wOX2HaJXU0IuQQDndaIEjx5Y0gcVNjFC4rE",
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaW5keSIsImp0aSI6Ijk0ODM4ZThkLTg4NmMtNGI5MC1hNDJkLTFlYzE5MWI4YmYzMCIsImV4cCI6MTU5OTg3NTI5MywiaXNzIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIiwiYXVkIjoiaHR0cHM6Ly93d3cuY25ibG9ncy5jb20vY2hlbmd0aWFuIn0.31vehnNNqfwTvw8GEo0EhQNR3ztXT5Oeyadv-FXaAq0",
 			}
 		},
     computed:{
       myID:function(){
+        if(this.$route.query.userID==undefined){
+          alert("缺少值：this.$route.query.userID")
+        }
         return this.$route.query.userID;
       }
     },
     created:function(){
       this.setCookie();
-      this.getTokenFromCookie();
       this.getLatestTopicsPageMessage();
-      this.getLatestTopicsList();
       this.getUserTopicNum();
       this.getAnswerNumOfUser();
-      this.getMyTopic();
       this.getHottestTopics();
     },
     methods:{
@@ -149,13 +153,14 @@
       getLTS(){
         if (this.ajax_getLTopicSum.readyState == 4 && this.ajax_getLTopicSum.status == 200) {
           var receive = JSON.parse(this.ajax_getLTopicSum.responseText);
-          var getTopicNumberFlag=receive.getTopicNumberFlag;
+          //var getTopicNumberFlag=receive.getTopicNumberFlag;
           this.LTopicSum=receive.totalNumber;
           this.LTopicPageSum=Math.ceil((this.LTopicSum)*1.0/this.LTopicCountPerPage);
           this.pageNums=[];                               //加载页控制按钮
           for(var i=1;i<=this.LTopicPageSum;i++){
             this.pageNums.push({page:i});
           }
+          this.getLatestTopicsList();
         }
       },
       LTNextPage(){
@@ -205,6 +210,7 @@
           //console.log(receive);
           if(receive.flag==1){
             this.myTopicsNum = receive.topicCount;
+            this.getMyTopic();
           }
           else{
             alert("getUserTopicNum返回错误");
@@ -244,9 +250,9 @@
       getMT(){
         if (this.ajax_getMyTopic.readyState == 4 && this.ajax_getMyTopic.status == 200) {
           var receive = JSON.parse(this.ajax_getMyTopic.responseText);
+          //console.log(JSON.parse(this.ajax_getMyTopic.responseText));
           if(receive.getTopicFlag==1){
             this.MTopics=JSON.parse(receive.Result);
-            console.log(this.MTopics);
           }
           else{
             alert("getMyTopicByPage失败");
@@ -267,7 +273,7 @@
       DT(){
         if (this.ajax_deleteTopic.readyState == 4 && this.ajax_deleteTopic.status == 200) {
           var receive = JSON.parse(this.ajax_deleteTopic.responseText);
-          console.log(receive);
+          //console.log(receive);
           if(receive.deleteTopicAnswerFlag==0){
             this.getUserTopicNum();
             this.getAnswerNumOfUser();
@@ -276,6 +282,24 @@
           else{
             alert("deleteTopicByID失败");
           }
+        }
+      },
+      MTLastPage(){
+        if(this.MTcurrentPage==1){
+          alert("没有上一页。");
+        }
+        else{
+          this.MTcurrentPage--;
+          this.getMyTopic();
+        }
+      },
+      MTNextPage(){
+        if(this.MTcurrentPage==Math.ceil(this.myTopicsNum*1.0/this.MTopicCountPerPage)){
+          alert("没有下一页。");
+        }
+        else{
+          this.MTcurrentPage++;
+          this.getMyTopic();
         }
       }
     }
@@ -548,5 +572,16 @@
   #hottest-topics-list{
   	background: #FFFFFF;
   	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25), inset 0px 1px 1px rgba(0, 0, 0, 0.25);
+  }
+  #my-topic-controller{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  	background: #FFFFFF;
+  	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25), inset 0px 1px 1px rgba(0, 0, 0, 0.25);
+  }
+  #my-topic-controller>div{
+    cursor: pointer;
   }
 </style>

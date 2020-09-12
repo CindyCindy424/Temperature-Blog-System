@@ -59,8 +59,8 @@
             <div class="comment-content">{{com.Content}}</div>
           </div>
           <div class="leave-comment">
-            <input class="leave-comment-input" type="text" placeholder="发表评论" />
-            <div class="leave-comment-button" v-on:click="commentAnswer(item.firstLevelComment.TopicAnswerID,$event)">发表</div>
+            <input class="leave-comment-input" type="text" placeholder="发表评论" v-model="item.myComment"/>
+            <div class="leave-comment-button" v-on:click="commentAnswer(item)">发表</div>
           </div>
         </div>
       </div>
@@ -111,9 +111,15 @@
     },
     computed:{
       thisTopic:function(){
+        if(this.$route.query.topicID==undefined){
+          alert("缺少值：this.$route.query.topicID")
+        }
         return this.$route.query.topicID;
       },
       myID:function(){
+        if(this.$route.query.userID==undefined){
+          alert("缺少值：this.$route.query.userID")
+        }
         return this.$route.query.userID;
       }
     },
@@ -199,6 +205,7 @@
             //answerList[i].userComments[j].userComment=JSON.parse(answerList[i].userComments[j].userComment);
             //answerList[i].userComments[j].userInfo=JSON.parse(answerList[i].userComments[j].userInfo);
           }
+          answerList[i].myComment="";
         }
         //console.log(answerList);
         this.Answers=answerList;
@@ -236,6 +243,7 @@
             this.topicDetail=receive.topicDetail;
             this.getTopicDetailByID();        //根据topicID获取回答（数据包含部分话题信息，但不完整，所以不用）
             this.getUserInfoByID();           //获取用户信息
+            console.log(receive);
           }
           else{
             alert("getSingleTopicDetail失败");
@@ -283,17 +291,17 @@
           //console.log(receive);
         }
       },
-      commentAnswer(topicAnswerID,e){
-        var content=this.myAnswerContent;
+      commentAnswer(item){
+        var content=item.myComment;
         var topicID=this.thisTopic;
         var userID=this.myID;
-        var parentID= topicAnswerID;
-        console.log(e);
+        var parentID= item.firstLevelComment.TopicAnswerID;
+        //console.log("http://139.224.255.43:7779/Topic/createTopicAnswerByID?content="+content+"&topicID="+topicID+"&userID="+userID+"&parentID="+parentID);
         this.ajax_commentAnswer = new XMLHttpRequest();
         this.ajax_commentAnswer.open("POST", "http://139.224.255.43:7779/Topic/createTopicAnswerByID?content="+content+"&topicID="+topicID+"&userID="+userID+"&parentID="+parentID, true);
         this.ajax_commentAnswer.setRequestHeader('Authorization','Bearer '+ this.getTokenFromCookie());
         this.ajax_commentAnswer.onreadystatechange = this.CA;
-        //this.ajax_commentAnswer.send();
+        this.ajax_commentAnswer.send();
       },
       CA(){
         if (this.ajax_commentAnswer.readyState == 4 && this.ajax_commentAnswer.status == 200) {
@@ -305,7 +313,7 @@
           else{
             alert("评论失败");
           }
-          console.log(receive);
+          //console.log(receive);
         }
       }
     }
@@ -519,6 +527,7 @@
   }
   .leave-comment-input{
     flex-grow: 1;
+    padding: 10px 20px;
     height: 28px;
     border-width: 0px;
     background-color: #F3F1F1;
@@ -529,7 +538,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 28px;
     padding: 0px 20px;
     background: #B23535;
     color: white;
@@ -539,9 +547,6 @@
   .comment-item{
     display: flex;
     padding: 20px 0px;
-    border-bottom-width: 1px ;
-    border-bottom-style: solid;
-    border-bottom-color: #969292;
   }
   .comment-author-avatar{
     flex-shrink: 0;
