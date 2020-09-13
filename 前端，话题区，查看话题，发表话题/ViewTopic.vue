@@ -98,7 +98,7 @@
         answerUserList:[],
 
         myAnswerContent: "",
-        
+
         isloading:false,
       };
     },
@@ -474,7 +474,7 @@
     overflow: hidden;
   }
   .left-aside-list-item:hover{
-    background-color: rgba(0,0,0,0.15);
+    color: #B23535;
   }
   #topic-and-answer{
     display: flex;

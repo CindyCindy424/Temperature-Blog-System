@@ -87,11 +87,11 @@
       po(){
         if (this.ajax_post.readyState == 4 && this.ajax_post.status == 200) {
           var receive = JSON.parse(this.ajax_post.responseText);
-          //console.log(receive);
+          console.log(receive);
           if(receive.createTopicFlag==1){
             alert("发表成功！");
-            this.$router.go(-1);
-            //this.$router.push({path:'/ViewTopic',query:{userID:this.myID,topicID:receive.topicID}});
+            //this.$router.go(-1);
+            this.$router.push({path:'/ViewTopic',query:{userID:this.myID,topicID:receive.topicDetail.topicId}});
           }
         }
       }
