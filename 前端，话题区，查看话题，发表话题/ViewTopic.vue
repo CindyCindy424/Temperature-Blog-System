@@ -49,8 +49,7 @@
         <div class="answer-content">{{item.firstLevelComment.Content}}</div>
         <div class="answer-message-time">发布于 {{item.firstLevelComment.UploadTime}}</div>
         <div class="answer-statistic">
-          <div class="answer-statistic-comment">评论 {{item.userComments.length}} |</div>
-          <div class="answer-statistic-likeit">&nbsp;点赞 {{item.firstLevelComment.AnswerLikes}}</div>
+          <div class="answer-statistic-comment">评论 {{item.userComments.length}}</div>
         </div>
         <div class="answer-comments">
           <div class="comment-item" v-for="com in item.userComments">
@@ -108,13 +107,13 @@
     computed:{
       thisTopic:function(){
         if(this.$route.query.topicID==undefined){
-          alert("缺少值：this.$route.query.topicID")
+          this.$alert('this.$route.query.topicID', '缺少值', {confirmButtonText: '确定'});
         }
         return this.$route.query.topicID;
       },
       myID:function(){
         if(this.$route.query.userID==undefined){
-          alert("缺少值：this.$route.query.userID")
+          this.$alert('this.$route.query.userID', '缺少值', {confirmButtonText: '确定'});
         }
         return this.$route.query.userID;
       },
@@ -247,7 +246,7 @@
             //console.log(receive);
           }
           else{
-            alert("getSingleTopicDetail失败");
+            this.$alert('getSingleTopicDetail失败', '请求失败', {confirmButtonText: '确定'});
           }
         }
       },
@@ -304,12 +303,13 @@
         if (this.ajax_answerTopic.readyState == 4 && this.ajax_answerTopic.status == 200) {
           var receive = JSON.parse(this.ajax_answerTopic.responseText);
           if(receive.cerateTopicAnswerFlag ==1){
-            alert("上传回答成功！");
+            this.$alert('成功', '上传回答', {confirmButtonText: '确定'});
+            //alert("上传回答成功！");
             this.myAnswerContent="";
             this.getTopicDetailByID();
           }
           else{
-            alert("上传回答失败");
+            this.$alert('失败', '上传回答', {confirmButtonText: '确定'});
           }
           //console.log(receive);
         }
@@ -331,11 +331,11 @@
         if (this.ajax_commentAnswer.readyState == 4 && this.ajax_commentAnswer.status == 200) {
           var receive = JSON.parse(this.ajax_commentAnswer.responseText);
           if(receive.cerateTopicAnswerFlag ==1){
-            alert("评论成功！");
+            this.$alert('成功', '评论操作', {confirmButtonText: '确定'});
             this.getTopicDetailByID();
           }
           else{
-            alert("评论失败");
+            this.$alert('失败', '评论操作', {confirmButtonText: '确定'});
           }
           //console.log(receive);
         }
@@ -404,7 +404,6 @@
   #author-info-img{
     width: 45px;
     height: 45px;
-    background-color: #00FF00;
     border-radius: 45px;
   }
   #author-info-text{
@@ -533,7 +532,6 @@
   .answer-author-avatar{
     height: 40px;
     width: 40px;
-    background-color: #0000FF;
     border-radius: 40px;
   }
   .answer-author-name{
@@ -596,7 +594,6 @@
   }
   .comment-author-avatar{
     flex-shrink: 0;
-    background-color: #13CE66;
     width: 30px;
     height: 30px;
     border-radius: 30px;

@@ -4,9 +4,8 @@
 
 ## 开发环境
 
-需要安装富文本编辑器的环境（导入但没有使用）：
-
-1. 在项目根目录下执行命令cnpm install vue-quill-editor 
+1. 富文本编辑器：在项目根目录下执行命令cnpm install vue-quill-editor 
+2. ECharts:在项目根目录下执行命令cnpm install echarts -S
 
 ## query传值
 

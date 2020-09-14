@@ -84,7 +84,7 @@
         LTSearchInput: "",
         LTopicSum: 0,
         LTopicPageSum: 1,
-        LTopicCountPerPage: 8,
+        LTopicCountPerPage: 3,
 				pageNums:[],
 
 				currentPage: 1,
@@ -106,7 +106,7 @@
     computed:{
       myID:function(){
         if(this.$route.query.userID==undefined){
-          alert("缺少值：this.$route.query.userID")
+          this.$alert('this.$route.query.userID', '缺少值', {confirmButtonText: '确定'});
         }
         return this.$route.query.userID;
       },
@@ -131,7 +131,7 @@
     methods:{
       getZoneID(){
         if(this.$route.query.zoneID==undefined){
-          alert("缺少值：this.$route.query.zoneID")
+          this.$alert('this.$route.query.zoneID', '缺少值', {confirmButtonText: '确定'});
         }
         else{
           this.zoneID=this.$route.query.zoneID;
@@ -194,7 +194,7 @@
       },
       LTNextPage(){
         if(this.currentPage==this.LTopicPageSum){
-          alert("没有下一页。");
+          this.$alert('没有下一页', '翻页错误', {confirmButtonText: '确定'});
         }
         else{
           this.currentPage++;
@@ -203,7 +203,7 @@
       },
       LTLastPage(){
         if(this.currentPage==1){
-          alert("没有上一页。");
+          this.$alert('没有上一页', '翻页错误', {confirmButtonText: '确定'});
         }
         else{
           this.currentPage--;
@@ -242,7 +242,7 @@
             this.getMyTopic();
           }
           else{
-            alert("getUserTopicNum返回错误");
+            this.$alert('getUserTopicNum失败', '请求错误', {confirmButtonText: '确定'});
           }
         }
       },
@@ -262,7 +262,7 @@
             this.myTopicsAnsNum = receive.userTopicAnswerCount;
           }
           else{
-            alert("getAnswerNumOfUser返回错误");
+            this.$alert('getAnswerNumOfUser失败', '请求错误', {confirmButtonText: '确定'});
           }
         }
       },
@@ -284,7 +284,7 @@
             this.MTopics=JSON.parse(receive.Result);
           }
           else{
-            alert("getMyTopicByPage失败");
+            this.$alert('getMyTopicByPage失败', '请求错误', {confirmButtonText: '确定'});
           }
         }
       },
@@ -309,13 +309,13 @@
             this.getMyTopic();
           }
           else{
-            alert("deleteTopicByID失败");
+            this.$alert('deleteTopicByID失败', '请求错误', {confirmButtonText: '确定'});
           }
         }
       },
       MTLastPage(){
         if(this.MTcurrentPage==1){
-          alert("没有上一页。");
+            this.$alert('没有上一页', '翻页错误', {confirmButtonText: '确定'});
         }
         else{
           this.MTcurrentPage--;
@@ -324,7 +324,7 @@
       },
       MTNextPage(){
         if(this.MTcurrentPage==Math.ceil(this.myTopicsNum*1.0/this.MTopicCountPerPage)){
-          alert("没有下一页。");
+            this.$alert('没有下一页', '翻页错误', {confirmButtonText: '确定'});
         }
         else{
           this.MTcurrentPage++;
@@ -599,7 +599,14 @@
     display: flex;
     justify-content: space-between;
   }
+  .MT-list-item>a{
+    /*实现超过一行的显示省略号*/
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
   .MT-list-item>span{
+    margin-left: 20px;
     color: gray;
   }
   #hottest-topics{
