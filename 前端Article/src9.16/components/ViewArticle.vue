@@ -95,13 +95,16 @@
 					<div class="ViewArticle-citem-comment-tar" v-if="item.parent_cr_id">
 						<p class="ViewArticle-citem-comment-tar-p">回复{{item.parent_cr_name}}:{{item.parent_cr_content}}</p>
 					</div>
+					<div class="ViewArticle-citem-comment-tar-not" v-if="!item.parent_cr_id">
+						<p class="ViewArticle-citem-comment-tar-p-not">空白</p>
+					</div>
 					<div class="ViewArticle-citem-comment-time">
 						<p class="ViewArticle-citem-comment-tar-p">{{item.article_cr_time}}</p>
 					</div>
 					<div class="ViewArticle-citem-comtocom">
 						<el-button type="text" @click="addSonComment(item.article_cr_id)">评论</el-button>
 					</div>
-					<!-- <img class="ViewArticle-citem-praise-logo" src="../assets/hand.png"/>
+					<!-- <img class="ViewArticle-citem-praise-logo" src="../assets/article/hand.png"/>
 					<div class="ViewArticle-citem-praise" @click="praisecom()" v-if="praisecomlimit==1"><span>赞！</span></div> 
 					<div class="ViewArticle-citem-praised" v-if="praisecomlimit==2"><span>赞！</span></div> -->
 					<div class="ViewArticle-citem-comment-delete" v-if="item.nick_name==accountownername" @click="DeleteComment(item.article_cr_id)">删除</div>
@@ -141,8 +144,9 @@
 		   data(){
 		   	return {
 				loc:'http://139.224.255.43:7779/',
-				token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiIyNmQ3ZTU4My1jYjNiLTQ0NzctYjMzMy1lNTU5OTFjZWM5ZjMiLCJleHAiOjE2MDAxNzE1ODMsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.A_dAXi9n67QkY0_6e3L4pbaOW6A-ELBn0o8Vg_Nb1AQ",
+				token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiJhZDljN2FmYi03MjhiLTQ3ZDEtOGJmNC0yOWRhMWZmODE1YWMiLCJleHAiOjE2MDAyNjY1NjIsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.38y9RBwfqP0w6xhVRwQLio27H_ASiSVvGxv4RYtkwPE",
 				articleid:0,
+				articleownerid:0,
 				accountownerid:0,
 				articleownername:"",
 				personalsign:"",
@@ -190,13 +194,22 @@
 		   },
 		   created:function(){
 			  this.getQuery();
-			  this.getArticleownerInfo();
-			  this.getAccountownerInfo();
+			  if(this.articleownername!=""){
+				  this.getArticleownerInfo();
+			  }
+			  if(this.articleownerid!=""){
+				   this.Articleowneridtoname();
+			  }
+			  if(this.accountownername!=""){
+				  this.getAccountownerInfo();
+			  }
+			  if(this.accountownerid!=""){
+				  this.Accountowneridtoname();
+			  }
 		   	  this.getArticle();
 			  this.getComment();
 			  this.getHottestArticle();
 			  this.getCommentNum();
-			  
 		   },
 	       methods:{
 			     getToken:function(){
@@ -206,7 +219,10 @@
 			     this.title = this.$route.query.ViewArticleTitle;
 				 this.articleownername = this.$route.query.ViewArticleNickname;
 			     this.accountownername = this.$route.query.ViewArticleUsername;
+				 this.articleownerid = this.$route.query.ViewArticleNickid; 
+				 this.accountownerid = this.$route.query.ViewArticleUserid; 
 			   },
+			   
 			   topMenuToggle(){
 			   	this.isMenuShow = this.isMenuShow == false?true:false;
 			   },
@@ -410,9 +426,25 @@
 			GUIsuccessfully(){
 				if (this.GUIajax.readyState == 4 && this.GUIajax.status == 200){
 					/*console.log(JSON.parse(this.GUIajax.responseText));*/
-					this.articleownername=JSON.parse(this.GUIajax.responseText).userInfo.nickName;
+					this.articleownerid=JSON.parse(this.GUIajax.responseText).userInfo.userId;
 					this.personalsign=JSON.parse(this.GUIajax.responseText).userAnnouncement;
 					this.articleowneravatar=JSON.parse(this.GUIajax.responseText).userInfo.avatr;
+				}
+			},
+			Articleowneridtoname(){
+				var id= this.articleownerid;
+				var headerToken=this.token;
+				this.GUNajax = new XMLHttpRequest();
+				this.GUNajax.open("POST", "http://139.224.255.43:7779/Account/getUserInfoByID?user_id="+id, true);
+				this.GUNajax.setRequestHeader('Authorization','Bearer '+headerToken);
+				this.GUNajax.onreadystatechange = this.GUNsuccessfully;
+				this.GUNajax.send();
+			},
+			GUNsuccessfully(){
+				if (this.GUNajax.readyState == 4 && this.GUNajax.status == 200){
+					this.articleownername=JSON.parse(this.GUNajax.responseText).userInfo.nickName;
+					this.personalsign=JSON.parse(this.GUNajax.responseText).userAnnouncement;
+					this.articleowneravatar=JSON.parse(this.GUNajax.responseText).userInfo.avatr;
 				}
 			},
 			getAccountownerInfo(){
@@ -429,6 +461,22 @@
 					/*console.log(JSON.parse(this.GAIajax.responseText));*/
 					this.accountowneravatar=JSON.parse(this.GAIajax.responseText).userInfo.avatr;
 					this.accountownerid=JSON.parse(this.GAIajax.responseText).userInfo.userId;
+				}
+			},
+			Accountowneridtoname(){
+				var id = this.accountownerid;
+				var headerToken=this.token;
+				this.GANajax = new XMLHttpRequest();
+				this.GANajax.open("POST", "http://139.224.255.43:7779/Account/getUserInfoByID?user_id="+id, true);
+				this.GANajax.setRequestHeader('Authorization','Bearer '+headerToken);
+				this.GANajax.onreadystatechange = this.GANsuccessfully;
+				this.GANajax.send();
+			},
+			GANsuccessfully(){
+				if (this.GAIajax.readyState == 4 && this.GAIajax.status == 200){
+					/*console.log(JSON.parse(this.GANajax.responseText));*/
+					this.accountowneravatar=JSON.parse(this.GANajax.responseText).userInfo.avatr;
+					this.accountownername=JSON.parse(this.GANajax.responseText).userInfo.nickName;
 				}
 			},
 			addArticlelike(){
@@ -646,7 +694,8 @@
 
 <style>
 	#ViewArticle-page{
-		width: 100%;
+		margin: 0 auto;
+		width: 1500px;
 		height: 1500px;
 				
 		font-family: Microsoft YaHei;
@@ -659,7 +708,8 @@
 		position: absolute;
 		width: 303px;
 		height: 154px;
-		left: 46px;
+		left:50%;
+		    margin-left: -713px;
 		margin-top: 81px;
 		background-color: #ffffff;
 	}
@@ -751,7 +801,8 @@
 		position: absolute;
 		width: 302px;
 		height: 344px;
-		left: 45px;
+		left:50%;
+		    margin-left: -713px;
 		top: 267px;
 		
 		background: #FFFFFF;
@@ -803,7 +854,8 @@
 		position: absolute;
 		width: 1010px;
 		height: 561px;
-		left: 382px;
+		left:50%;
+		    margin-left: -378px;
 		top: 80px;
 		
 		background: #ffffff;
@@ -852,7 +904,7 @@
 		height: 20px;
 		margin: 0;
 		
-		background-image: url('../assets/timelogo.jpg');
+		background-image: url('../assets/article/timelogo.jpg');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -870,7 +922,7 @@
 		height: 20px;
 		margin: 0;
 		
-		background-image: url('../assets/hand.png');
+		background-image: url('../assets/article/hand.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -888,7 +940,7 @@
 		height: 20px;
 		margin: 0;
 		
-		background-image: url('../assets/star.png');
+		background-image: url('../assets/article/star.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -927,7 +979,7 @@
 		left: 39px;
 		top: 112px;
 		
-		background-image: url('../assets/tag.png');
+		background-image: url('../assets/article/tag.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -964,10 +1016,10 @@
 		position: absolute;
 		width: 15px;
 		height: 15px;
-		left: -15px;
+		left: -20px;
 		top: 2px;
 		
-		background-image: url('../assets/点赞2.png');
+		background-image: url('../assets/article/点赞2.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -977,10 +1029,10 @@
 		position: absolute;
 		width: 15px;
 		height: 15px;
-		left: -15px;
+		left: -20px;
 		top: 1px;
 		
-		background-image: url('../assets/点赞3.png');
+		background-image: url('../assets/article/点赞3.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -1007,9 +1059,9 @@
 		position: absolute;
 		width: 15px;
 		height: 15px;
-		left: 0px;
+		left: -20px;
 		top: 2px;
-		background-image: url('../assets/收藏2.png');
+		background-image: url('../assets/article/收藏2.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -1019,9 +1071,9 @@
 		position: absolute;
 		width: 15px;
 		height: 15px;
-		left: 0px;
+		left: -20px;
 		top: 2px;
-		background-image: url('../assets/收藏3.png');
+		background-image: url('../assets/article/收藏3.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -1050,7 +1102,8 @@
 		position: absolute;
 		width: 1010px;
 		height: 95px;
-		left: 382px;
+		left:50%;
+		    margin-left: -378px;
 		top: 668px;
 		
 		background: #FFFFFF;
@@ -1151,6 +1204,25 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 	}
+	.ViewArticle-citem-comment-tar-not{
+		display: inline-block;
+		width: 200px;
+		margin: 0;
+		margin-top: 4%;
+		font-size: 14px;
+		line-height: 25px;	
+		font-family: Microsoft YaHei;
+		font-style: normal;
+		font-weight: normal;
+		text-align: left;
+	}
+	.ViewArticle-citem-comment-tar-p-not{
+		margin: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		opacity:0;
+	}
 	.ViewArticle-citem-comment-time{
 		display: inline-block;
 		margin-top: 4.7%;
@@ -1217,7 +1289,8 @@
 		margin: 0;
 		right:70px;
 		top:30px;
-	
+		
+		opacity:0;
 		width: fit-content;
 			
 		font-size: 18px;
@@ -1234,7 +1307,8 @@
 		position: absolute;
 		width: 982px;
 		height: 100px;
-		left: 364px;
+		left:50%;
+		    margin-left: -378px;
 		top: 1278px;
 		
 		

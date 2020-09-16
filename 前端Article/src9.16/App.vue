@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div :class="['navigation']">
-      <img src="./assets/logo.png" :class="{logo:isLogo}" />
+      <img src="./assets/article/logo.png" :class="{logo:isLogo}" />
       <p :class="['title']">Temperature</p>
       <input :class="['search']" />
       <el-button icon="el-icon-search" circle style="position:absolute;top:10px;left:780px;color="></el-button>
@@ -103,6 +103,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 2500px;
 }
 
 #nav {

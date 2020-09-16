@@ -1,9 +1,10 @@
 <template>
-	<div>
+	<div id="UplaodArticle">
+		<div id="UploadArticle-photo">
+			<img src="../assets/article/banner.png" alt="照片">
+		</div>
 		<div id="UploadArticle-page">
-			<div id="UploadArticle-photo">
-				<img src="../assets/banner.png" alt="照片">
-			</div>
+			
 		</div>
 		<div class="UploadArticle-index-container">
 			<span id="UploadArticle-index-path">创作中心 > 写博文</span>
@@ -32,7 +33,6 @@
 			<div>
 				<button id="UploadArticle-publish" @click="creatArticle()">
 					 <router-link :to="{path:'/MyArticle',query:{MyArticleid:this.accoountownerid,MyArticlename:this.accoountownername}}"><span id="UploadArticle-publish-index">发表</span></router-link> 
-					
 				</button>
 				<button id="UploadArticle-quit">
 					<router-link :to="{path:'/MyArticle',query:{MyArticleid:this.accoountownerid,MyArticlename:this.accoountownername}}"><span id="UploadArticle-quit-index">取消</span></router-link>
@@ -45,13 +45,85 @@
 <script>
 	export default{
 		name:"ArticleContent",
+		data(){
+			return {
+				zone: 0,
+				accoountownername:"www",
+				accoountownerid:3,
+				isMenuShow: false,
+				isLimMenuShow: false,
+				token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiJhZDljN2FmYi03MjhiLTQ3ZDEtOGJmNC0yOWRhMWZmODE1YWMiLCJleHAiOjE2MDAyNjY1NjIsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.38y9RBwfqP0w6xhVRwQLio27H_ASiSVvGxv4RYtkwPE",
+				ajax:0,
+				inputaricletitie:'',
+				inputarticlecontent:'',
+				options: [{
+				          value: '1',
+				          label: '学习',
+						  id:1,
+				        }, {
+				          value: '2',
+				          label: '生活',
+						  id:2,
+				        }, {
+				          value: '3',
+				          label: '开发',
+						  id:3,
+				        }, {
+				          value: '4',
+				          label: '游戏',
+						  id:4,
+				        }, {
+				          value: '5',
+				          label: '娱乐',
+						  id:5,
+				        }, {
+				          value: '6',
+				          label: '体育',
+						  id:6,
+				        }, {
+				          value: '7',
+				          label: '影视',
+						  id:7,
+				        }, {
+				          value: '8',
+				          label: '资讯',
+						  id:8,
+				        }, {
+				          value: '9',
+				          label: '时尚',
+						  id:9,
+				        }, {
+				          value: '10',
+				          label: '舞蹈',
+						  id:10,
+				        }, {
+				          value: '11',
+				          label: '音乐',
+						  id:11,
+				        }, {
+				          value: '12',
+				          label: '其他',
+						  id:12,
+				        }],
+				        value: ''
+			};
+		},
 		created:function(){
-			this.getUserInfo();
+			if(this.accoountownername!=""){
+				this.getUserInfo();
+			}
+			if(this.accoountownerid!=""){
+				this.UserIdToname();
+			}
 		},
 		methods:{
 			   getToken:function(){
 			       this.token=document.cookie.split(";")[0].split("=")[1];
 			    },
+				getQuery: function () {
+				 this.accoountownerid = this.$route.query.UploadArticleid;
+				 this.accoountownername = this.$route.query.UploadArticlename;
+				},
 			creatArticle(){
 				if(this.inputaricletitie!=""&&this.inputarticlecontent!=""&&this.zoneid!=""){
 					var forms=new FormData();
@@ -135,81 +207,39 @@
 				if (this.GUIajax.readyState == 4 && this.GUIajax.status == 200){	
 					var id=JSON.parse(this.GUIajax.responseText).userInfo.userId;
 					this.accoountownerid=id;
-				}
-				
+				}		
+			},
+			UserIdToname(){
+							   var id=this.userid;
+							   var headerToken=this.token;
+							   this.UITajax = new XMLHttpRequest();
+							   this.UITajax.open("POST", "http://139.224.255.43:7779/Account/getUserInfoByID?user_id="+id, true);
+							   this.UITajax.setRequestHeader('Authorization','Bearer '+headerToken);
+							   this.UITajax.onreadystatechange = this.UITsuccessfully;
+							   this.UITajax.send();
+			},
+			UITsuccessfully(){
+							   if (this.UITajax.readyState == 4 && this.UITajax.status == 200){
+								   this.nickname=JSON.parse(this.GUNajax.responseText).userInfo.nickName;
+								   this.personalsign=JSON.parse(this.GUNajax.responseText).userAnnouncement;
+								   this.articleowneravatar=JSON.parse(this.GUNajax.responseText).userInfo.avatr;
+							   }
 			},
 		},
-		data(){
-			return {
-				zone: 0,
-				accoountownername:"cindy",
-				accoountownerid:5,
-				isMenuShow: false,
-				isLimMenuShow: false,
-				token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiIyNmQ3ZTU4My1jYjNiLTQ0NzctYjMzMy1lNTU5OTFjZWM5ZjMiLCJleHAiOjE2MDAxNzE1ODMsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.A_dAXi9n67QkY0_6e3L4pbaOW6A-ELBn0o8Vg_Nb1AQ",
-				ajax:0,
-				inputaricletitie:'',
-				inputarticlecontent:'',
-				options: [{
-				          value: '1',
-				          label: '学习',
-						  id:1,
-				        }, {
-				          value: '2',
-				          label: '生活',
-						  id:2,
-				        }, {
-				          value: '3',
-				          label: '开发',
-						  id:3,
-				        }, {
-				          value: '4',
-				          label: '游戏',
-						  id:4,
-				        }, {
-				          value: '5',
-				          label: '娱乐',
-						  id:5,
-				        }, {
-				          value: '6',
-				          label: '体育',
-						  id:6,
-				        }, {
-				          value: '7',
-				          label: '影视',
-						  id:7,
-				        }, {
-				          value: '8',
-				          label: '资讯',
-						  id:8,
-				        }, {
-				          value: '9',
-				          label: '时尚',
-						  id:9,
-				        }, {
-				          value: '10',
-				          label: '舞蹈',
-						  id:10,
-				        }, {
-				          value: '11',
-				          label: '音乐',
-						  id:11,
-				        }, {
-				          value: '12',
-				          label: '其他',
-						  id:12,
-				        }],
-				        value: ''
-			};
-		}
+		
 	}
 </script>
 
 <style>
+	#UplaodArticle{
+
+     width: 100%;
+	 height: 2500px;
+	 background-color: #E5E5E5;
+	}
 	#UploadArticle-page{
-		width: 100%;
-		height: 2500px;
-				
+		width: 1100px;
+						
 		font-family: Microsoft YaHei;
 				
 		background: #E5E5E5;
@@ -225,10 +255,11 @@
 	}
 	.UploadArticle-index-container{
 		position: absolute;
-		width: 1347px;
+		width: 1100px;
 		height: 108px;
-		left: 46px;
-		top: 398px;
+		 left:50%;
+		 margin-left: -550px;
+		top: 320px;
 		
 		background: #F9F8F8;
 		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -255,17 +286,18 @@
 	
 	#UploadArticle-container{
 		position: absolute;
-		width: 1345px;
+		width: 1100px;
 		height: 1889px;
-		left: 48px;
-		top: 506px;
+		 left:50%;
+		    margin-left: -550px;
+		top: 408px;
 		
 		background: #FFFFFF;
 	}
 	#UploadArticle-article-title-container{
 		margin-top: 5%;
 		margin-left: 4.5%;
-		width: 1194px;
+		width: 988px;
 		height: 79px;
 		
 		background: #ffffff;
@@ -294,8 +326,8 @@
 		outline:none;/*input边框获取时不显示*/
 	}
 	#UploadArticle-head-container{
-		width: 1194px;
-		height: 151px;
+		width: 988px;
+		height: 111px;
 		margin-top: 2%;
 		margin-left: 4.5%;
 		text-align: left;
@@ -303,7 +335,7 @@
 		background: #C4C4C4;
 	}
 	#UploadArticle-head{
-		padding-top: 5%;
+		padding-top: 4.2%;
 		padding-left: 5%;
 		font-family: Microsoft YaHei;
 		font-style: normal;
@@ -352,8 +384,8 @@
 		position: absolute;
 		width: 159px;
 		height: 42px;
-		left: 902px;
-		top: 1096px;
+		left: 602px;
+		top: 996px;
 		
 		background: #DA4646;
 		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -381,8 +413,8 @@
 		position: absolute;
 		width: 159px;
 		height: 42px;
-		left: 1119px;
-		top: 1096px;
+		left: 839px;
+		top: 996px;
 		
 		background: #EFE7E7;
 		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -410,8 +442,8 @@
 	}
 	
 	#UploadArticle-zone-button{
-		margin-top: -3%;
-		margin-left: 18%;
+		margin-top: -40px;
+		margin-left: 220px;
 		width: 170px;
 		height: 38px;
 	}

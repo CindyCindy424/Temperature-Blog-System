@@ -1,7 +1,7 @@
 <template>
 	<div id="MyArticle-page">
 		<div id="MyArticle-photo">
-			<img src="../assets/banner.png" alt="照片">
+			<img src="../assets/article/banner.png" alt="照片">
 		</div>
 		<div id="MyArticle-personal">
 			    <div>
@@ -88,7 +88,7 @@
 	       data(){
 	       	return{
 				loc:'http://139.224.255.43:7779/',
-				token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiIyNmQ3ZTU4My1jYjNiLTQ0NzctYjMzMy1lNTU5OTFjZWM5ZjMiLCJleHAiOjE2MDAxNzE1ODMsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.A_dAXi9n67QkY0_6e3L4pbaOW6A-ELBn0o8Vg_Nb1AQ",
+				token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiJhZDljN2FmYi03MjhiLTQ3ZDEtOGJmNC0yOWRhMWZmODE1YWMiLCJleHAiOjE2MDAyNjY1NjIsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.38y9RBwfqP0w6xhVRwQLio27H_ASiSVvGxv4RYtkwPE",
 				nickname:"",
 				userid:0,
 				personalsign:"心如止水",
@@ -115,9 +115,14 @@
 	       },
 		   created:function(){
 			this.getQuery();
+			if(this.nickname!=""){
+				this.getUserInfo();
+			}
+			if(this.userid!=""){
+				this.UserIdToname();
+			}
 		   	this.getFocusNum();
 			this.getFansNum();
-			this.getUserInfo();
 			this.getHottestArticle();
 			/*this.getLatestComment();*/
 			this.getLikesReplyArticleNum();
@@ -205,6 +210,22 @@
 					this.userid=JSON.parse(this.GUIajax.responseText).userInfo.userId;
 			   		/*this.personalsign=JSON.parse(this.GUIajax.responseText).userInfo.nickName*/
 			    	}
+			   },
+			   UserIdToname(){
+				   var id=this.userid;
+				   var headerToken=this.token;
+				   this.UITajax = new XMLHttpRequest();
+				   this.UITajax.open("POST", "http://139.224.255.43:7779/Account/getUserInfoByID?user_id="+id, true);
+				   this.UITajax.setRequestHeader('Authorization','Bearer '+headerToken);
+				   this.UITajax.onreadystatechange = this.UITsuccessfully;
+				   this.UITajax.send();
+			   },
+			   UITsuccessfully(){
+				   if (this.UITajax.readyState == 4 && this.UITajax.status == 200){
+					   this.nickname=JSON.parse(this.GUNajax.responseText).userInfo.nickName;
+					   this.personalsign=JSON.parse(this.GUNajax.responseText).userAnnouncement;
+					   this.articleowneravatar=JSON.parse(this.GUNajax.responseText).userInfo.avatr;
+				   }
 			   },
 			   getHottestArticle(){
 			   	var number = 8;
@@ -309,11 +330,10 @@
 
 
 <style>
-	*{
-		margin: 0 auto;
-	}
+
 	#MyArticle-page{
-		width: 100%;
+		margin: 0 auto;
+		width: 1500px;
 		height: 2800px;
 				
 		font-family: Microsoft YaHei;
@@ -322,19 +342,20 @@
 	}
 	#MyArticle-photo{
 		width: calc(100% - 0px);
-		height: 312px;
+		height: 332px;
 		overflow: hidden;
 	}
 	#MyArticle-photo>img{
-		width: 100%;
+		width: 1500px;
 		margin-top: calc((0px - 600px + 352px) / 2 + 40px) ;	/*更换图片需要注意修改*/
 	}
 	#MyArticle-personal{
 		position: absolute;
 		width: 303px;
 		height: 154px;
-		left: 46px;
-		margin-top: 71px;
+		left:50%;
+		margin-left: -713px;
+		margin-top: 51px;
 		background-color: #ffffff;
 	}
 	#MyArticle-head-photo{
@@ -425,7 +446,8 @@
 		position: absolute;
 		width: 303px;
 		height: 54px;
-		left: 46px;
+		left:50%;
+		margin-left: -713px;
 		top: 569px;
 		
 		background: #FFFFFF;
@@ -471,7 +493,7 @@
 		left: 190px;
 		top: 0px;
 		
-		background-image: url('../assets/search.png');
+		background-image: url('../assets/article/search.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -482,7 +504,8 @@
 		position: absolute;
 		width: 302px;
 		height: 375px;
-		left: 45px;
+		left:50%;
+		    margin-left: -713px;
 		top: 649px;
 		
 		background: #FFFFFF;
@@ -602,7 +625,8 @@
 		position: absolute;
 		width: 982px;
 		height: 91px;
-		left: 402px;
+		left:50%;
+		    margin-left: -360px;
 		top: 389px;
 		
 		background: #FFFFFF;
@@ -628,7 +652,8 @@
 		position: absolute;
 		width: 982px;
 		height: 1000px;
-		left: 402px;
+		left:50%;
+		    margin-left: -360px;
 		top: 485px;
 		
 		border: 1px solid #C4C4C4;
@@ -707,7 +732,7 @@
 		margin-left: 51px;
 		margin-top: 10px;
 		
-		background-image: url('../assets/评论.png');
+		background-image: url('../assets/article/评论.png');
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -756,7 +781,8 @@
 		position: absolute;
 		width: 982px;
 		height: 100px;
-		left: 364px;
+		left:50%;
+		    margin-left: -372px;
 		top: 1858px;
 		
 	  display: flex;
