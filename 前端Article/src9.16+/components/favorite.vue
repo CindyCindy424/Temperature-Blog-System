@@ -38,11 +38,13 @@
 
       <div id="yyw-favorite-list">
         <div class="yyw-f-item" v-for="item in favorite" :key="item.articleId">
-          <router-link :to="{path:'/ViewArticle',query:{ViewArticleTitle:item.title,ViewArticleNickid:item.userId,ViewArticleUserid:currentUserId}}"><span class="yyw-f-title">{{item.title}}</span></router-link>
-          <router-link :to="{path:'/ViewArticle',query:{ViewArticleTitle:item.title,ViewArticleNickid:item.userId,ViewArticleUserid:currentUserId}}"><span class="yyw-f-content">{{item.articleContent}}</span></router-link>
+          <router-link :to="{path:'/ViewArticle',query:{ViewArticleTitle:item.title,ViewArticleNickname:item.nickName,ViewArticleUsername:currentUserName}}"><span class="yyw-f-title">{{item.title}}</span></router-link>
+          <router-link :to="{path:'/ViewArticle',query:{ViewArticleTitle:item.title,ViewArticleNickname:item.nickName,ViewArticleUsername:currentUserName}}"><span class="yyw-f-content">{{item.articleContent}}</span></router-link>
+          <!-- <span class="yyw-f-title">{{item.title}}</span>
+          <span class="yyw-f-content">{{item.articleContent}}</span> -->
           <span class="yyw-f-date">{{item.articleUploadTime}}</span>
           <span class="yyw-f-answerCount">
-            <img class="yyw-readnum" src="../assets/icon/eye(2).png" />
+            
             {{item.readNum}}
           </span>
           <span class="yyw-f-delete" @click="isDeleteC=true;deleteContent(item.title,item.articleId)">删除</span>
@@ -121,6 +123,7 @@ export default {
       articleId: "",
       userID:"3",
       currentUserId:"3",
+      currentUserName:"www",
       pageNum: 1,
       isDeleteF: false,
       isDeleteC: false,
@@ -134,7 +137,7 @@ export default {
       favoriteList: [],
       favorite: [],
       token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiI2MjgyYWMwNy1jMjA4LTQ5NzQtOTJkMC1jNjRkZGE2OGY0MjciLCJleHAiOjE2MDAyNjgzNDYsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.gRs_WQLZHKyUliizVM88l9YD6__WKkkZdV_0RlrH_mY",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3d3ciLCJqdGkiOiJjN2E3ZDdiNy1jOGZlLTRjOWYtYTM1Zi01ZDU5ZGJjODAwMDAiLCJleHAiOjE2MDAyNzIyOTQsImlzcyI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiIsImF1ZCI6Imh0dHBzOi8vd3d3LmNuYmxvZ3MuY29tL2NoZW5ndGlhbiJ9.ooSw2C-0TwOCErPGfl6o5YfSoR0T7AoqQX6V4RI3REs",
     };
   },
   created: function () {
@@ -381,7 +384,7 @@ export default {
   position: absolute;
   background-color: #c5c5c5;
   width: 100%;
-  height: 1900px;
+  height: 2300px;
   margin-left:-10px;
   margin-right: 5px;
 }
@@ -428,12 +431,11 @@ export default {
   color: #000000;
 }
 #yyw-right-top {
-  margin:0 auto;
- 
+  margin: 0 auto;
   position: relative;
   height: 91px;
-  left: 150px;
-  top: -949px;
+  left:149px;
+  top: -1409px;
   width: 1150px;
 
   background: #ffffff;
@@ -478,16 +480,13 @@ export default {
 }
 
 #yyw-favorite-list {
-  margin:0;
-    margin: 0 auto;
+  margin: 0 auto;
   position: relative;
   width: 1150px;
-  height:1400px;
 
-  left: 150px;
-  top: -940px;
+  left:150px;
+  top: -1400px;
 
-  flex-direction: column;
 }
 .yyw-f-item {
   margin-top: 5px;
@@ -612,6 +611,6 @@ export default {
 #yyw-ffooter{
   margin: 0 auto;
   position: relative;
-  bottom:500px;
+  bottom:750px;
 }
 </style>
