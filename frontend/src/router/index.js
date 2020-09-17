@@ -4,6 +4,9 @@ import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
 import MySpace from '../components/MySpace.vue'
 import MainPage from '../components/MainPage.vue'
+import Album from '../components/Album.vue'
+import Photo from '../components/Photo.vue'
+import Favourite from '../components/Favourite.vue'
 Vue.use(Router)
 const routes = [{
   path: '/',
@@ -11,14 +14,23 @@ const routes = [{
   component: Login
 },
 {
+  path: '/Favourite',
+  name: 'Favourite',
+  component: Favourite
+},
+{
+  path: '/Photo',
+  name: 'Photo',
+  component: Photo
+},
+{
+  path: '/Album',
+  name: 'Album',
+  component: Album
+},
+{
   path: '/Login',
   name: 'Login',
-  // route level code-splitting
-  // this generates a separate chunk (about.[hash].js) for this route
-  // which is lazy-loaded when the route is visited.
-  // component: () =>
-  // import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
   component: Login
 },
 {

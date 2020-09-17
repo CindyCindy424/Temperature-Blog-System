@@ -7,6 +7,8 @@
       </p>
    </div>
    <div :class="['loginArea']">
+      <div :class="['Edge']" style="position:absolute;left:-1px;top:-1px;"></div>
+      <div :class="['Edge']" style="position:absolute;left:-1px;top:483px;"></div>
       <p :class="['loginTitle']">登录Temperature</p>
       <el-alert v-if="isLoginSuccess===0" title="密码错误" type="error" show-icon
       style="position:absolute;top:320px;left:222px;width:300px;"></el-alert>
@@ -24,7 +26,11 @@
       <input type="password" :class="['inputBox']" style="top:-30px;" v-model="password">
       <el-button type="danger" style="position:absolute;top:360px;left:480px;" @click="submit">登录</el-button>
    </div>
+   <footer style="position:absolute;bottom:40px;left:40%;" :class="['footer']">
+    <p> Copyright ©2020 Temperature team, All Rights Reserved.</p>
+  </footer>
   </div>
+
 </template>
 
 <script>
@@ -34,7 +40,7 @@ export default {
     return {
       isBackground: true,
       backgroundDiv: {
-        backgroundImage: 'url(' + require('../assets/images/babe-fyrcsrv8730487.jpg') + ')',
+        backgroundImage: 'url(' + require('../assets/images/login2.jpg') + ')',
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100%'
       },
@@ -52,7 +58,6 @@ export default {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
           var response = xhr.responseText
-
           var returnModel = JSON.parse(response)
           this.token = returnModel.token
           this.$emit('updateToken')
@@ -86,7 +91,7 @@ export default {
     position: absolute;
     width: 100%;
     height: 100%;
-    top:60px;
+    top:0px;
     left:0px;
 }
 .intro{
@@ -184,5 +189,22 @@ export default {
   background: #FFFFFF;
   border: 1px solid #9C9A9A;
   box-sizing: border-box;
+}
+.Edge{
+  background: #ffffff;
+  width: 31px;
+  height: 25px;
+}
+.footer{
+  font-family: Microsoft YaHei;
+font-style: normal;
+font-weight: normal;
+font-size: 18px;
+line-height: 24px;
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #999494;
 }
 </style>

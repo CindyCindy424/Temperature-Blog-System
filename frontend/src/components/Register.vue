@@ -43,6 +43,9 @@
       <el-alert title="注册成功，正在跳转..." type="success" style="position:absolute;left:80px;top:580px;width:300px;height:44px;" v-if='this.isRegisterSuc===1' show-icon>
       </el-alert>
     </div>
+    <footer style="position:absolute;bottom:40px;left:40%;" :class="['footer']">
+    <p> Copyright ©2020 Temperature team, All Rights Reserved.</p>
+  </footer>
   </div>
 </template>
 <script>
@@ -52,9 +55,9 @@ export default {
   data () {
     return {
       backgroundDiv: {
-        backgroundImage: 'url(' + require('../assets/images/register.jpg') + ')',
+        backgroundImage: 'url(' + require('../assets/images/register2.jpg') + ')',
         backgroundRepeat: 'no-repeat',
-        backgroundSize: '100%,100%'
+        backgroundSize: '100%'
       },
       account: '',
       PSW: '',
@@ -132,7 +135,7 @@ export default {
     position: absolute;
     width: 100%;
     height: 1339px;
-    top:60px;
+    top:0px;
     left:0px;
 }
 .registerArea{
@@ -217,5 +220,17 @@ export default {
     text-align: center;
 
     background-color: #DA4646;;
+}
+.footer{
+  font-family: Microsoft YaHei;
+font-style: normal;
+font-weight: normal;
+font-size: 18px;
+line-height: 24px;
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #999494;
 }
 </style>

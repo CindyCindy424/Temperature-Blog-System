@@ -5,15 +5,14 @@
         <router-link to="/MainPage" :class="['title']">Temperature</router-link>
         <input :class="['search']">
         <el-button icon="el-icon-search" circle style="position:absolute;top:10px;left:40%;color="></el-button>
-        <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal"
-        @select="handleSelect"  background-color="#545c64" text-color="#FFFFFF" active-text-color="#FFFFFF">
-          <el-menu-item index="/message" v-if='isLogin' :class="['message']">消息中心</el-menu-item>
-          <el-menu-item index="/favourite" v-if='isLogin' :class="['favourite']">收藏夹</el-menu-item>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" text-color="#FFFFFF"
+        @select="handleSelect">
+          <el-menu-item index="/favourite" v-if='isLogin' :class="['favourite']" @click="this.pushToFavourite">收藏夹</el-menu-item>
           <el-submenu index="/compose" v-if='isLogin' :class="['compose']">
             <template slot="title">创作</template>
-            <el-menu-item index="/compose/text">发表文章</el-menu-item>
-            <el-menu-item index="/compose/topic">发表话题</el-menu-item>
-            <el-menu-item index="/compose/picture">上传图片</el-menu-item>
+            <el-menu-item index="/compose/text" style="color:black;font-size:20px;height:40px;border-bottom:2px solid grey;">发表文章</el-menu-item>
+            <el-menu-item index="/compose/topic" style="color:black;font-size:20px;height:40px;border-bottom:2px solid grey;">发表话题</el-menu-item>
+            <el-menu-item index="/compose/picture" style="color:black;font-size:20px;height:40px;" @click="this.pushToPic">图片</el-menu-item>
           </el-submenu>
         </el-menu>
         <router-link  to="/Login"   :class="['login']" v-show="isLogin==0">登录</router-link>
@@ -21,13 +20,8 @@
         <el-avatar v-show="isLogin==1" style="position:absolute;top:10px;left:93%;" :src="this.avator"></el-avatar>
         <router-link :to="{path:'/MySpace',query:{account:this.account}}" v-text="account" :class="['mySpace']" v-show="isLogin"></router-link>
     </div>
-    <router-view :ref='currentPage'  @turnToRegister="turnToRegister()" @loginSuc="loginSuccess()" @propAccount="changeAccount" @updateToken='updateToken()'></router-view>
-    <footer>
-      <p :style="footer">
-        Copyright ©2020 Temperature team, All Rights Reserved.
-      </p>
-    </footer>
-  </div>
+    <router-view ref="view"  @turnToRegister="turnToRegister()" @loginSuc="loginSuccess()" @propAccount="changeAccount" @updateToken='updateToken()'></router-view>
+</div>
 </template>
 
 <script>
@@ -43,31 +37,11 @@ export default {
       activeIndex: '1',
       activeIndex2: '1',
       avator: '',
-      footer: {
-        position: 'absolute',
-        width: '997px',
-        height: '130px',
-        top: '950px',
-        left: '35%',
-        'font-family': 'Microsoft YaHei',
-        'font-style': 'normal',
-        'font-weight': 'normal',
-        'font-size': '18px',
-        'line-height': '24px',
-        display: 'flex',
-        'align-items': 'center',
-        'text-align': 'center',
-        color: '#999494'
-      },
-      token: ''
+      token: '',
+      userID: ''
     }
   },
-  mounted () {
-    // 动态设置内容高度 让footer始终居底   header+footer的高度是100
-    this.Height = document.documentElement.clientHeight - 100
-    // 监听浏览器窗口变化
-    window.onresize = () => { this.Height = document.documentElement.clientHeight - 100 }
-    // this.$data.footer.top = document.documentElement.clientHeight
+  created () {
     this.token = document.cookie.split(';')[0].split('=')[1]
     if (typeof (this.token) === 'undefined' && this.isLogin === true) {
       this.isLogin = false
@@ -82,6 +56,18 @@ export default {
     loginSuccess: function () {
       this.isLogin = true
     },
+    getUserID: function () {
+      var xhr = new XMLHttpRequest()
+      xhr.onreadystatechange = () => {
+        var response = xhr.responseText
+        var returnModel = JSON.parse(response)
+        this.userID = returnModel.userInfo.userId
+      }
+      var headerToken = document.cookie.split(';')[0].split('=')[1]
+      xhr.open('POST', 'http://139.224.255.43:7779/Account/getUserInfoByNickName?nick_name=' + this.account)
+      xhr.setRequestHeader('Authorization', 'Bearer ' + headerToken)
+      xhr.send()
+    },
     changeAccount: function (evtValue) {
       this.account = evtValue
     },
@@ -89,15 +75,19 @@ export default {
       console.log(key, keyPath)
     },
     updateToken: function () {
-      this.token = this.$refs.Login.token
+      this.token = this.$refs.view.token
       var exdate = new Date()
       exdate.setTime(exdate.getTime() + 20 * 60 * 1000)
       document.cookie = 'token=' + this.token + ';expires=' + exdate.toUTCString()
-      console.log(document.cookie)
-      console.log(this.token)
     },
     turnToRegister: function () {
       this.currentPage = 'Register'
+    },
+    pushToPic: function () {
+      this.$router.push({path: '/Album', query: {userID: this.userID, currentUserID: this.userID}})
+    },
+    pushToFavourite: function () {
+      this.$router.push({path: '/Favourite', query: {userID: this.userID, currentUserName: this.account}})
     }
   },
   watch: {
@@ -107,14 +97,13 @@ export default {
         if (xhr2.readyState === 4 && xhr2.status === 200) {
           var response = xhr2.responseText
           this.returnInfo = JSON.parse(response)
-          console.log('ah:' + response)
+          this.getUserID()
           if (this.returnInfo.flag === 1) {
             this.avator = 'http://139.224.255.43:7779/BlogPics/Avator/' + this.returnInfo.path.split('\\')[2]
           }
         }
       }
       var headerToken = document.cookie.split(';')[0].split('=')[1]
-      console.log('current account=' + this.account)
       xhr2.open('POST', 'http://139.224.255.43:7779/Account/getAvatrResource?nick_name=' + this.account)
       xhr2.setRequestHeader('Authorization', 'Bearer ' + headerToken)
       xhr2.send()
@@ -150,9 +139,9 @@ export default {
     height: 63px;
     left: 0px;
     top: -1px;
-    background: #545c64;
+    opacity: 1;
+    z-index:999;
 }
-
 .logo {
     position: absolute;
     width: 38px;
@@ -174,6 +163,7 @@ export default {
     font-size: 24px;
     line-height: 33px;
     color: #FFFFFF;
+    text-decoration: none;
 }
 
 .search {
@@ -205,7 +195,7 @@ export default {
 
 .favourite {
     position: absolute;
-    width: 54px;
+    width: 100px;
     height: 24px;
     left: 60%;
     top: 0px;
@@ -221,7 +211,7 @@ export default {
 
 .compose {
     position: absolute;
-    width: 36px;
+    width: 100px;
     height: 24px;
     left: 70%;
     top: 0px;
@@ -233,7 +223,6 @@ export default {
     line-height: 24px;
     text-decoration-line: none;
     /* identical to box height */
-    color: #FFFFFF;
 }
 .mySpace {
     position: absolute;
@@ -289,5 +278,31 @@ export default {
 }
 .el-submenu__title {
   font-size: 18px;
+}
+.el-menu{
+  opacity: 1;
+}
+.el-menu-item{
+  opacity:1;
+  border-bottom: 0px;
+}
+.el-menu-item:hover{
+  opacity:0.5!important;
+
+}
+.el-menu-item.is-active{
+  background-color:transparent!important;
+}
+
+.el-submenu{
+  opacity:1;
+  border-bottom: 0px;
+}
+.el-submenu:hover{
+  opacity:0.5!important;
+  background-color:transparent!important;
+}
+.el-submenu.is-active{
+  background-color:transparent!important;
 }
 </style>

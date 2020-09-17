@@ -13,8 +13,9 @@
         <el-card class="box-card" :class="['sideBar4']" style="width:280px;">
         </el-card>
         <el-card class="box-card" :class="['MySpacetitle']" style="width:1000px;">
-            <p>{{mySpaceTitle}}</p>
+            <p style="color: #756F6F;font-family: Microsoft YaHei;font-style: normal;font-size:24px;line-height: 32px;font-weight: bold;">{{mySpaceTitle}}</p>
         </el-card>
+        <div>
         <el-card class="box-card" :class="['MySpaceContent']" style="width:1000px;">
             <div>
                 <AccountInfo v-if="toDisplay==1" @changeAccount="changeAccount()"></AccountInfo>
@@ -22,6 +23,13 @@
                 <myFans v-if="toDisplay==3"></myFans>
             </div>
         </el-card>
+        </div>
+        <div>
+          <footer style="position:absolute;top:1400px;;left:40%;" :class="['footer']">
+            <p> Copyright ©2020 Temperature team, All Rights Reserved.</p>
+            <p><br/>&nbsp;</p>
+          </footer>
+        </div>
     </div>
 </template>
 <script>
@@ -95,9 +103,17 @@ Vue.component('AccountInfo', {
       newBirthday: '',
       newWechat: '',
       newGender: '',
-      isOriginPassword: false,
-      originPasswordWrong: '原密码错误请重新输入'
+      userID: '',
+      isOriginPassword: true,
+      originPasswordWrong: '原密码错误请重新输入',
+      year: '',
+      month: '',
+      day: '',
+      dialogVisible: false
     }
+  },
+  computed: {
+    action: function () { return 'http://139.224.255.43:7779/Account/createAvatorByName?nick_name=' + this.$route.query.account }
   },
   template: `
    <div :load="this.getAllInfo()">
@@ -106,53 +122,80 @@ Vue.component('AccountInfo', {
       <el-upload
         class="upload-demo"
         ref="upload"
-        :file-list="fileList"
+        :file-list="this.fileList"
         :auto-upload="false"
+        :action="this.action"
         list-type="text"
         :limit="1"
-        style="position:absolute;left:60px;top:240px;width:300px;">
+        :headers=this.headers
+        style="position:absolute;left:20px;top:240px;width:300px;">
         <el-button slot="trigger" size="small" type="primary">修改头像</el-button>
         <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">确定</el-button>
       </el-upload>
-      <p style="position:absolute;left:400px;top:40px;" :class="['word']">用户名：</p>
-      <p v-text="this.nickName"  v-if="isEditable==false" style="position:absolute;left:470px;top:35px;font-size:25px;"></p>
-      <el-input size="mini" id="modifyAccount" v-model="input" placeholder="请输入新用户名" v-if="isEditable==true" style="width:200px;position:absolute;left:470px;top:60px;">
+      <p style="position:absolute;left:350px;top:50px;" :class="['word']">用户名：</p>
+      
+      <el-input size="mini" id="modifyAccount" v-model="input" placeholder="请输入新用户名" v-if="isEditable==true" style="width:200px;position:absolute;left:530px;top:60px;">
       </el-input>
-      <el-button size="mini" type="success" style="position:absolute;left:670px;top:60px;" v-on:click="changeAccount()" v-if="isEditable==true">确认</el-button>
-      <el-button type="primary" icon="el-icon-edit" size="small" circle v-show="isEditable==false" v-on:click="editName()" style="position:absolute;left:590px;top:59px;"></el-button>
-      <p style="position:absolute;left:400px;top:80px;" :class="['word']">密码：</p>
-      <el-button type="warning" v-show="isPSWChange==false" style="position:absolute;left:460px;top:100px;" size="mini" v-on:click="editPassword()">点击修改密码</el-button>
-      <el-input type="password" size="mini" v-model="input2"  placeholder="请输入原密码" v-if="isPSWChange==true" style="width:150px;position:absolute;left:460px;top:100px;"></el-input>
-      <el-button size="mini" type="success" style="position:absolute;left:580px;top:100px;" v-on:click="validateOriginPSW()" v-if="isPSWChange==true">确认</el-button>
-      <el-button size="mini" type="warning" style="position:absolute;left:630px;top:100px;" v-on:click="giveupModifyPassword()" v-if="isPSWChange==true||isChangePSWAvailable==true">放弃</el-button>
-      <p v-if="isOriginPassword===true" style="position:absolute;left:720px;top:90px;font-family:Microsoft YaHei;color:red;" v-text="originPasswordWrong"></p>
-      <el-input type="password" size="mini" v-model="input3" placeholder="请输入新密码" v-if="isChangePSWAvailable==true" style="width:150px;position:absolute;left:460px;top:100px;"></el-input>
-      <el-button size="mini" type="success" style="position:absolute;left:580px;top:100px;" v-on:click="changePSW()" v-if="isChangePSWAvailable==true">确认</el-button>
-      <p style="position:absolute;left:400px;top:120px;" :class="['word']">编辑个人信息</p>
-      <el-switch v-model="changeBasicInfo" active-color="#13ce66" inactive-color="#ff4949" style="position:absolute;left:530px;top:143px;"></el-switch>
-      <p style="position:absolute;left:400px;top:160px;" :class="['word']">所在地：</p>
-      <p style="position:absolute;left:400px;top:200px;" :class="['word']">生日：</p>
-      <p style="position:absolute;left:400px;top:240px;" :class="['word']">邮箱：</p>
-      <p style="position:absolute;left:400px;top:280px;" :class="['word']">手机号：</p>
-      <p style="position:absolute;left:400px;top:320px;" :class="['word']">微信号：</p>
-      <p style="position:absolute;left:400px;top:360px;" :class="['word']">性别：</p>
-      <p v-text="this.Location"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:160px;font-size:20px;"></p>
-      <p v-text="this.Birthday"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:200px;font-size:20px;"></p>
-      <p v-text="this.Email"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:240px;font-size:20px;"></p>
-      <p v-text="this.Telephone"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:280px;font-size:20px;"></p>
-      <p v-text="this.Wechat"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:320px;font-size:20px;"></p>
-      <p v-text="this.Gender"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:360px;font-size:20px;"></p>
-      <p style="position:absolute;left:400px;top:400px;font-size:10px;color:grey;" v-if="changeBasicInfo">*无修改则不填写新数据</p>
-      <el-input  :placeholder="this.Location" type="text" v-if="changeBasicInfo" size="mini" id="inputBoxLocation" v-model="newLocation" style="width:180px;position:absolute;left:480px;top:180px;"  clearable></el-input>
-      <el-date-picker v-if="changeBasicInfo" v-model="newBirthday" type="date"  placeholder="选择日期" style="position:absolute;left:480px;top:220px;font-size:20px;width:180px;" size="small" value-format="yyyy-MM-dd"></el-date-picker>
-      <el-input  :placeholder="this.Email" type="text" v-if="changeBasicInfo" size="mini" id="inputBoxEmail" v-model="newEmail" style="width:180px;position:absolute;left:480px;top:260px;"  clearable></el-input>
-      <el-input  :placeholder="this.Telephone" type="text" v-if="changeBasicInfo" size="mini" id="inputBoxTelephone" v-model="newTelephone" style="width:180px;position:absolute;left:480px;top:300px;" clearable></el-input>
-      <el-input  :placeholder="this.Wechat" type="text" v-if="changeBasicInfo" size="mini" id="inputBoxWechat"  v-model="newWechat" style="width:180px;position:absolute;left:480px;top:340px;" clearable ></el-input>
-      <el-input  :placeholder="this.Gender" type="text" v-if="changeBasicInfo" size="mini" id="inputBoxWechat"  v-model="newGender" style="width:180px;position:absolute;left:480px;top:380px;" clearable ></el-input>
-      <el-button type="success" @click="submitNewInfo()" v-if="changeBasicInfo==true" :loading="modifySubmit" style="height:40px;width:120px;position:absolute;left:510px;top:440px;">提交更新</el-button>
+      <el-button size="mini" type="success" style="position:absolute;left:720px;top:60px;" v-on:click="changeAccount()" v-if="isEditable==true">确认</el-button>
+      <p v-text="this.nickName"  v-if="isEditable==false" style="position:absolute;left:435px;top:42px;font-size:25px;"></p>
+      <el-button type="primary" icon="el-icon-edit" size="small" circle v-show="isEditable==false" v-on:click="editName()" style="position:relative;left:40px;top:43px;"></el-button>
+      <p style="position:absolute;left:350px;top:150px;" :class="['word']">密码：</p>
+      <p style="position:absolute;left:350px;top:100px;" :class="['word']">用户ID:</p>
+      <p style="position:absolute;left:450px;top:100px;" :class="['word']" v-text="this.userID"></p>
+      <hr align=center width=960 color=#969292 SIZE=1 style="position:absolute;top:320px;"></hr>
+      <el-button v-show="isPSWChange==false" style="position:absolute;left:420px;top:170px;" size="mini" v-on:click="editPassword()">点击修改密码</el-button>
+      <el-input type="password" size="small" v-model="input2"  placeholder="请输入原密码" v-if="isPSWChange==true" style="width:150px;position:absolute;left:420px;top:170px;"></el-input>
+      <el-button size="mini" style="position:absolute;left:540px;top:170px;height:32px;" v-on:click="validateOriginPSW()" v-if="isPSWChange==true">确认</el-button>
+      <el-button size="mini" style="position:absolute;left:590px;top:170px;height:32px;" v-on:click="giveupModifyPassword()" v-if="isPSWChange==true||isChangePSWAvailable==true">放弃</el-button>
+      <p v-if="isOriginPassword===false" style="position:absolute;left:670px;top:160px;font-family:Microsoft YaHei;color:red;" v-text="originPasswordWrong"></p>
+      <el-input type="password" size="small" v-model="input3" placeholder="请输入新密码" v-if="isChangePSWAvailable==true" style="width:150px;position:absolute;left:420px;top:170px;"></el-input>
+      <el-dialog
+        title="消息"
+        :visible.sync="dialogVisible"
+        width="30%"
+        style="top:30%;"
+        :before-close="handleClose">
+        <span>修改密码成功</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
+      <p :class="['word']" style="position:absolute;left:350px;top:200px;">公告:</p>
+      <p :class="['word']" style="position:absolute;left:430px;top:200px;" v-text="this.userAnnouncement"></p>
+      <el-button size="mini" style="position:absolute;left:540px;top:170px;" v-on:click="changePSW()" v-if="isChangePSWAvailable==true">确认</el-button>
+      <p style="position:absolute;left:810px;top:317px;" :class="['word']">修改资料</p>
+      <el-switch v-model="changeBasicInfo" active-color="#13ce66" inactive-color="#ff4949" style="position:absolute;left:900px;top:340px;"></el-switch>
+      <p style="position:absolute;left:300px;top:450px;" :class="['word']">所在地：</p>
+      <p style="position:absolute;left:300px;top:500px;" :class="['word']">生日：</p>
+      <p style="position:absolute;left:300px;top:550px;" :class="['word']">邮箱：</p>
+      <p style="position:absolute;left:300px;top:600px;" :class="['word']">手机号：</p>
+      <p style="position:absolute;left:300px;top:650px;" :class="['word']">微信号：</p>
+      <p style="position:absolute;left:300px;top:400px;" :class="['word']">性别：</p>
+      <p v-text="this.Location"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:450px;font-size:20px;"></p>
+      <p v-text="this.Birthday"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:500px;font-size:20px;"></p>
+      <p v-text="this.Email"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:550px;font-size:20px;"></p>
+      <p v-text="this.Telephone"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:600px;font-size:20px;"></p>
+      <p v-text="this.Wechat"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:650px;font-size:20px;"></p>
+      <p v-text="this.Gender"  v-if="!changeBasicInfo" style="position:absolute;left:480px;top:400px;font-size:20px;"></p>
+      <p style="position:absolute;left:600px;top:695px;font-size:10px;color:grey;" v-if="changeBasicInfo">*无修改则不填写新数据</p>
+      <el-input  :placeholder="this.Location" type="text" v-if="changeBasicInfo" size="small" id="inputBoxLocation" v-model="newLocation" style="width:280px;position:absolute;left:480px;top:470px;"  clearable></el-input>
+      <el-date-picker v-if="changeBasicInfo" v-model="newBirthday" type="date"  placeholder="选择日期" style="position:absolute;left:480px;top:520px;font-size:20px;width:280px;" size="small" value-format="yyyy-MM-dd"></el-date-picker>
+      <el-input  :placeholder="this.Email" type="text" v-if="changeBasicInfo" size="small" id="inputBoxEmail" v-model="newEmail" style="width:280px;position:absolute;left:480px;top:570px;"  clearable></el-input>
+      <el-input  :placeholder="this.Telephone" type="text" v-if="changeBasicInfo" size="small" id="inputBoxTelephone" v-model="newTelephone" style="width:280px;position:absolute;left:480px;top:620px;" clearable></el-input>
+      <el-input  :placeholder="this.Wechat" type="text" v-if="changeBasicInfo" size="small" id="inputBoxWechat"  v-model="newWechat" style="width:280px;position:absolute;left:480px;top:670px;" clearable ></el-input>
+      <el-radio label="男" v-model="newGender" v-if="changeBasicInfo" style="position:absolute;left:480px;top:420px;font-size:20px;" size="medium"></el-radio>
+      <el-radio label="女" v-model="newGender" v-if="changeBasicInfo" style="position:absolute;left:600px;top:420px;font-size:20px;" size="medium"></el-radio>
+      <el-button type="success" @click="submitNewInfo()" v-if="changeBasicInfo==true" :loading="modifySubmit" style="height:40px;width:120px;position:absolute;left:640px;top:740px;">提交更新</el-button>
     </div>
   `,
   methods: {
+    handleClose (done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
     submitNewInfo: function () {
       this.modifySubmit = true
       var xhr = new XMLHttpRequest()
@@ -175,6 +218,10 @@ Vue.component('AccountInfo', {
       }
       if (this.newBirthday === '') {
         this.newBirthday = this.Birthday
+      } else {
+        this.year = this.newBirthday.split('-')[0]
+        this.month = this.newBirthday.split('-')[1]
+        this.day = this.newBirthday.split('-')[2]
       }
       if (this.newWechat === '') {
         this.newWechat = this.Wechat
@@ -183,22 +230,45 @@ Vue.component('AccountInfo', {
         this.newGender = this.Gender
       }
       var headerToken = document.cookie.split(';')[0].split('=')[1]
-      xhr.open('POST', 'http://139.224.255.43:7779/Account/personalInfo?nick_name=' + this.nickName + '&gender=' + this.newGender + '&location=' + this.newLocation + '&email=' + this.newEmail + '&tel=' + this.newTelephone + '&wechat=' + this.newWechat)
+      xhr.open('POST', 'http://139.224.255.43:7779/Account/personalInfo?nick_name=' + this.nickName + '&gender=' + this.newGender + '&location=' + this.newLocation + '&email=' + this.newEmail + '&tel=' + this.newTelephone + '&wechat=' + this.newWechat + '&year=' + this.year + '&month=' + this.month + '&day=' + this.day)
       xhr.setRequestHeader('Authorization', 'Bearer ' + headerToken)
       xhr.send()
     },
     giveupModifyPassword: function () {
       this.isPSWChange = false
       this.isChangePSWAvailable = false
+      this.isOriginPassword = true
     },
     submitUpload: function () {
+      var fileValue = document.querySelector('.el-upload .el-upload__input')
+      var fd = new window.FormData()
+      // 配置post请求的参数。参数名file,后面跟要传的文件，参数名fileType，值为category（看后端的具体要求）
+      fd.append('uploadedPhoto', fileValue.files[0])
       var xhr = new XMLHttpRequest()
-      xhr.onreadystatechange = () => {
-      }
+      xhr.open('POST', 'http://139.224.255.43:7779/Account/createAvatorByName?nick_name=' + this.$route.query.account, true)
       var headerToken = document.cookie.split(';')[0].split('=')[1]
-      xhr.open('POST', 'http://139.224.255.43:7779/Account/Login?nick_name=' + this.account + '&password=' + this.password)
       xhr.setRequestHeader('Authorization', 'Bearer ' + headerToken)
-      xhr.send()
+      // url就是要发送的post请求的地址
+      xhr.send(fd)
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          this.imgurl = JSON.parse(xhr.responseText).url
+          var xhr2 = new XMLHttpRequest()
+          xhr2.onreadystatechange = () => {
+            if (xhr2.readyState === 4 && xhr2.status === 200) {
+              var response = xhr2.responseText
+              this.returnInfo = JSON.parse(response)
+              if (this.returnInfo.flag === 1) {
+                this.avator = 'http://139.224.255.43:7779/BlogPics/Avator/' + this.returnInfo.path.split('\\')[2]
+                this.fileList = []
+              }
+            }
+          }
+          xhr2.open('POST', 'http://139.224.255.43:7779/Account/getAvatrResource?nick_name=' + this.$route.query.account)
+          xhr2.setRequestHeader('Authorization', 'Bearer ' + headerToken)
+          xhr2.send()
+        }
+      }
     },
     handleExceed (files, fileList) {
       this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
@@ -230,11 +300,11 @@ Vue.component('AccountInfo', {
       var xhr = new XMLHttpRequest()
       xhr.onreadystatechange = () => {
         var response = xhr.responseText
-        console.log(response)
         var returnModel = JSON.parse(response)
         if (returnModel.result === 'true') {
           this.isPSWChange = false
           this.isChangePSWAvailable = true
+          this.isOriginPassword = true
         } else {
           this.isOriginPassword = false
         }
@@ -248,7 +318,10 @@ Vue.component('AccountInfo', {
       var xhr = new XMLHttpRequest()
       xhr.onreadystatechange = () => {
         var response = xhr.responseText
-        console.log(response)
+        var isSuccess = JSON.parse(response)
+        if (isSuccess.modifyFlag === 1) {
+          this.dialogVisible = true
+        }
       }
       var headerToken = document.cookie.split(';')[0].split('=')[1]
       xhr.open('POST', 'http://139.224.255.43:7779/Account/passwordModify?nick_name=' + this.nickName + '&oldPW=' + this.input2 + '&newPW=' + this.input3)
@@ -269,6 +342,8 @@ Vue.component('AccountInfo', {
           this.nickName = this.returnInfo.userInfo.nickName
           this.Birthday = this.returnInfo.userInfo.dob.slice(0, 10)
           this.Gender = this.returnInfo.userInfo.gender
+          this.userID = this.returnInfo.userInfo.userId
+          this.userAnnouncement = this.returnInfo.userAnnouncement
         }
       }
       var headerToken = document.cookie.split(';')[0].split('=')[1]
@@ -443,13 +518,18 @@ Vue.component('MyFans', {
 .MySpaceContent{
     position: absolute;
     width: 1015px;
-    height: 1137px;
+    height: 835px;
     left: 35%;
     top: 515px;
 }
 .word{
-    font-family: Microsoft YaHei;
-    font-size:20px;
+  font-family: Microsoft YaHei;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #000000;
 }
 .MySpacetitle{
     position: absolute;
@@ -531,7 +611,7 @@ Vue.component('MyFans', {
     font-family: Microsoft YaHei;
     font-style: normal;
     font-weight: normal;
-    height: 1000px;
+    height: 700px;
     /* identical to box height */
 
     display: flex;
@@ -543,18 +623,30 @@ Vue.component('MyFans', {
 }
 .avator{
     position: absolute;
-    left: 150px;
+    left: 100px;
     top: 50px;
 }
 .text {
     font-size: 14px;
   }
 
-  .item {
+.item {
     padding: 18px 0;
-  }
+}
 
 .avatorInterval{
   width:150px;
+}
+.footer{
+  font-family: Microsoft YaHei;
+font-style: normal;
+font-weight: normal;
+font-size: 18px;
+line-height: 24px;
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #999494;
 }
 </style>
